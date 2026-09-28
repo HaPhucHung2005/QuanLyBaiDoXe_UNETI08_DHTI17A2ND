@@ -31,6 +31,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public bool TrangThai { get; set; } = true;
 
         //Quan he 1-n Loai Phuong Tien voi Vi Tri Do Xe
-        public virtual ICollection<ViTriDoXe>? DanhSachViTriDoXe { get; set; }
+        //public virtual ICollection<ViTriDoXe>? DanhSachViTriDoXe { get; set; }
     }
 }
