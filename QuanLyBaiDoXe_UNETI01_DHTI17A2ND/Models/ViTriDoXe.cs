@@ -3,6 +3,7 @@
 // Nội dung thực hiện: Module 2 - Entity ViTriDoXe và Data Annotations
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 {
@@ -21,7 +22,8 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public int MaLoaiPhuongTien { get; set; }
 
         // Lập khóa ngoại
-        [Required(ErrorMessage = "Vui lòng chọn loại phương tiện")]
+        // Khai báo khóa ngoại tới Entity LoaiPhuongTien (Không dùng [Required] ở đây)
+        [ForeignKey("MaLoaiPhuongTien")]
         [Display(Name = "Loại phương tiện")]
         public virtual LoaiPhuongTien? LoaiPhuongTien { get; set; }
 
@@ -31,7 +33,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public string KhuVuc { get; set; } = null!;
 
         [Required(ErrorMessage = "Tầng không được để trống")]
-        [Range(1, 100, ErrorMessage = "Tầng phải từ 1 trở lên")]
+        [Range(1, 100, ErrorMessage = "Tầng phải từ 1 đến 100")]
         [Display(Name = "Tầng")]
         public int Tang { get; set; }
 
