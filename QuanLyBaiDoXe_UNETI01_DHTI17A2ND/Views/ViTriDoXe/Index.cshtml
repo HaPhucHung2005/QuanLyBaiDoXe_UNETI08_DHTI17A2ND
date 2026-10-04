@@ -1,71 +1,138 @@
-@model IEnumerable<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe>
+@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+
+@using Microsoft.AspNetCore.Http
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.ViTriDoXeFilterViewModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản Lý & Tra Cứu Vị Trí Đỗ Xe";
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-primary fw-bold">🚗 TRA CỨU & QUẢN LÝ VỊ TRÍ ĐỖ XE</h2>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-success fw-bold">+ Thêm Vị Trí Mới</a>
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<!-- FORM TÌM KIẾM, LỌC VÀ SẮP XẾP -->
+<div class="card p-3 mb-4 shadow-sm border-0 bg-light">
+    <form asp-action="Index" method="get" class="row g-2 align-items-center">
+        <div class="col-md-3">
+            <input type="text" name="searchTenViTri" value="@Model.SearchTenViTri" class="form-control" placeholder="Tên vị trí (vd: A-01)..." />
+        </div>
+        <div class="col-md-2">
+            <select name="searchKhuVuc" asp-items="Model.KhuVucList" class="form-select">
+                <option value="">-- Tất cả khu vực --</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="selectedMaLoaiPhuongTien" asp-items="Model.LoaiPhuongTienList" class="form-select">
+                <option value="">-- Loại phương tiện --</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="selectedTrangThai" asp-items="Model.TrangThaiList" class="form-select">
+                <option value="">-- Trạng thái --</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sortOrder" class="form-select">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder))">Tên A-Z</option>
+                <option value="name_desc" selected="@(Model.SortOrder == "name_desc")">Tên Z-A</option>
+                <option value="tang_asc" selected="@(Model.SortOrder == "tang_asc")">Tầng thấp -> cao</option>
+                <option value="tang_desc" selected="@(Model.SortOrder == "tang_desc")">Tầng cao -> thấp</option>
+            </select>
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary fw-bold">🔍 Lọc</button>
+        </div>
+    </form>
+</div>
+
+<!-- BẢNG DANH SÁCH -->
+<table class="table table-bordered table-hover align-middle shadow-sm bg-white">
+    <thead class="table-primary text-center">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TenViTri)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaLoaiPhuongTien)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoaiPhuongTien)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.KhuVuc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tang)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrangThai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MoTa)
-            </th>
-            <th></th>
+            <th>Tên Vị Trí</th>
+            <th>Khu Vực</th>
+            <th>Tầng</th>
+            <th>Loại Xe Khả Dụng</th>
+            <th>Đơn Giá / Giờ</th>
+            <th>Trạng Thái</th>
+            <th>Thao Tác</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.TenViTri)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.MaLoaiPhuongTien)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.LoaiPhuongTien)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.KhuVuc)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Tang)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.TrangThai)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.MoTa)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaViTri">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaViTri">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaViTri">Delete</a>
-            </td>
-        </tr>
-}
+        @if (Model.DanhSachViTri != null && Model.DanhSachViTri.Any())
+        {
+            @foreach (var item in Model.DanhSachViTri)
+            {
+                <tr>
+                    <td class="fw-bold text-dark text-center">@item.TenViTri</td>
+                    <td class="text-center">@item.KhuVuc</td>
+                    <td class="text-center">Tầng @item.Tang</td>
+                    <td class="text-center">
+                        <span class="badge bg-info text-dark">@(item.LoaiPhuongTien?.TenLoaiPhuongTien ?? "Chưa xếp")</span>
+                    </td>
+                    <td class="text-end text-success fw-bold">
+                        @(item.LoaiPhuongTien != null ? item.LoaiPhuongTien.DonGiaTheoGio.ToString("N0") + " VNĐ" : "-")
+                    </td>
+                    <td class="text-center">
+                        @if (item.TrangThai == "Còn trống")
+                        {
+                            <span class="badge bg-success">Còn trống</span>
+                        }
+                        else if (item.TrangThai == "Đang sử dụng")
+                        {
+                            <span class="badge bg-danger">Đang sử dụng</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@item.TrangThai</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a asp-action="Details" asp-route-id="@item.MaViTri" class="btn btn-outline-info">Xem</a>
+                            @if (isAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.MaViTri" class="btn btn-outline-primary">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.MaViTri" class="btn btn-outline-danger">Xóa</a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-3">Không tìm thấy vị trí đỗ xe nào phù hợp.</td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- THANH PHÂN TRANG -->
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-searchTenViTri="@Model.SearchTenViTri"
+                       asp-route-searchKhuVuc="@Model.SearchKhuVuc"
+                       asp-route-selectedMaLoaiPhuongTien="@Model.SelectedMaLoaiPhuongTien"
+                       asp-route-selectedTang="@Model.SelectedTang"
+                       asp-route-selectedTrangThai="@Model.SelectedTrangThai"
+                       asp-route-sortOrder="@Model.SortOrder"
+                       asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

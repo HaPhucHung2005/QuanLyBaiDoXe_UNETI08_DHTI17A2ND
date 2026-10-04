@@ -11,7 +11,7 @@ using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261004121304_InitialCreate")]
+    [Migration("20261004142019_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

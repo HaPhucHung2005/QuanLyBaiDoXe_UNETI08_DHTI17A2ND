@@ -1,16 +1,22 @@
+@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+@using Microsoft.AspNetCore.Http
 @model IEnumerable<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.LoaiPhuongTien>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản Lý Loại Phương Tiện";
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
 
-<h1>Index</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-primary fw-bold">QUẢN LÝ LOẠI PHƯƠNG TIỆN</h2>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-success fw-bold">+ Thêm Loại Phương Tiện</a>
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<table class="table table-bordered table-hover align-middle shadow-sm bg-white">
+    <thead class="table-primary text-center">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.TenLoaiPhuongTien)
@@ -24,36 +30,58 @@
             <th>
                 @Html.DisplayNameFor(model => model.TrangThai)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DanhSachViTriDoXe)
-            </th>
-            <th></th>
+            <th>Số Vị Trí Đỗ</th>
+            <th>Thao Tác</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.TenLoaiPhuongTien)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.DonGiaTheoGio)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.MoTa)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.TrangThai)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.DanhSachViTriDoXe)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaLoaiPhuongTien">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaLoaiPhuongTien">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaLoaiPhuongTien">Delete</a>
-            </td>
-        </tr>
-}
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="fw-bold text-dark">
+                        @Html.DisplayFor(model => item.TenLoaiPhuongTien)
+                    </td>
+                    <td class="text-end text-success fw-bold">
+                        @item.DonGiaTheoGio.ToString("N0") VNĐ
+                    </td>
+                    <td>
+                        @(string.IsNullOrEmpty(item.MoTa) ? "Chưa có mô tả" : item.MoTa)
+                    </td>
+                    <td class="text-center">
+                        @if (item.TrangThai)
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Ngừng hoạt động</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-primary rounded-pill px-3">
+                            @(item.DanhSachViTriDoXe?.Count ?? 0) vị trí
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a asp-action="Details" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-info">Xem</a>
+                            @if (isAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-primary">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-danger">Xóa</a>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted py-3">Chưa có dữ liệu loại phương tiện nào.</td>
+            </tr>
+        }
     </tbody>
 </table>

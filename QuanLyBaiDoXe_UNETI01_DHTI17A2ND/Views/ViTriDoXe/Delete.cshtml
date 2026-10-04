@@ -1,74 +1,93 @@
+@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xác Nhận Xóa Vị Trí Đỗ Xe";
 }
 
-<h1>Delete</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 card p-4 shadow-sm border-0 rounded-3">
+        <div class="alert alert-danger text-center fw-bold fs-5 mb-3" role="alert">
+            ⚠️ BẠN CÓ CHẮC CHẮN MUỐN XÓA VỊ TRÍ ĐỖ XE NÀY?
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenViTri)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenViTri)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaLoaiPhuongTien)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaLoaiPhuongTien)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LoaiPhuongTien)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LoaiPhuongTien)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.KhuVuc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.KhuVuc)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tang)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tang)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TrangThai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TrangThai)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MoTa)
-        </dd>
-    </dl>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="MaViTri" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+        <h4 class="text-secondary mb-3">Thông tin chi tiết vị trí đỗ xe:</h4>
+        <hr />
+
+        @if (Model != null)
+        {
+            <dl class="row fs-6">
+                <dt class="col-sm-4 text-muted">
+                    @Html.DisplayNameFor(model => model.TenViTri)
+                </dt>
+                <dd class="col-sm-8 fw-bold text-dark">
+                    @Html.DisplayFor(model => model.TenViTri)
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    @Html.DisplayNameFor(model => model.KhuVuc)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.KhuVuc)
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    @Html.DisplayNameFor(model => model.Tang)
+                </dt>
+                <dd class="col-sm-8">
+                    Tầng @Html.DisplayFor(model => model.Tang)
+                </dd>
+
+                <dt class="col-sm-4 text-muted">Loại Xe Khả Dụng</dt>
+                <dd class="col-sm-8 text-info fw-bold">
+                    @(Model.LoaiPhuongTien?.TenLoaiPhuongTien ?? "Chưa phân loại")
+                </dd>
+
+                <dt class="col-sm-4 text-muted">Đơn Giá / Giờ</dt>
+                <dd class="col-sm-8 text-success fw-bold">
+                    @(Model.LoaiPhuongTien != null ? Model.LoaiPhuongTien.DonGiaTheoGio.ToString("N0") + " VNĐ" : "-")
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    @Html.DisplayNameFor(model => model.TrangThai)
+                </dt>
+                <dd class="col-sm-8">
+                    @if (Model.TrangThai == "Còn trống")
+                    {
+                        <span class="badge bg-success">Còn trống</span>
+                    }
+                    else if (Model.TrangThai == "Đang sử dụng")
+                    {
+                        <span class="badge bg-danger">Đang sử dụng</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@Model.TrangThai</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4 text-muted">
+                    @Html.DisplayNameFor(model => model.MoTa)
+                </dt>
+                <dd class="col-sm-8">
+                    @(string.IsNullOrEmpty(Model.MoTa) ? "Chưa có ghi chú" : Model.MoTa)
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" asp-route-id="@Model.MaViTri" class="d-flex justify-content-between align-items-center mt-4">
+                <input type="hidden" asp-for="MaViTri" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+                <button type="submit" class="btn btn-danger fw-bold px-4">Xác Nhận Xóa</button>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center">
+                Không tìm thấy thông tin vị trí đỗ xe.
+            </div>
+            <div class="text-center mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+            </div>
+        }
+    </div>
 </div>

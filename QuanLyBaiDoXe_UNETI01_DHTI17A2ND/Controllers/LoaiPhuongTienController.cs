@@ -9,159 +9,176 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 
-public class LoaiPhuongTienController : Controller
+namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public LoaiPhuongTienController(ApplicationDbContext context)
+    public class LoaiPhuongTienController : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    private bool IsAdmin() => HttpContext.Session.GetString("VaiTro") == "Admin";
-
-    // GET: LOAIPHUONGTIENS
-    public async Task<IActionResult> Index()    
-    {
-        if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
-        return View(await _context.LoaiPhuongTien.ToListAsync());
-    }
-
-    // GET: LOAIPHUONGTIENS/Details/5
-    public async Task<IActionResult> Details(int? maloaiphuongtien)
-    {
-        if (maloaiphuongtien == null)
+        public LoaiPhuongTienController(ApplicationDbContext context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        var loaiphuongtien = await _context.LoaiPhuongTien
-            .FirstOrDefaultAsync(m => m.MaLoaiPhuongTien == maloaiphuongtien);
-        if (loaiphuongtien == null)
+        private bool IsAdmin()
         {
-            return NotFound();
+            var vaiTro = HttpContext.Session.GetString("VaiTro");
+            return !string.IsNullOrEmpty(vaiTro) && vaiTro == "Admin";
         }
 
-        return View(loaiphuongtien);
-    }
-
-    // GET: LOAIPHUONGTIENS/Create
-    [HttpGet]
-    public IActionResult Create()
-    {
-        if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
-        return View();
-    }
-
-    // POST: LOAIPHUONGTIENS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("MaLoaiPhuongTien,TenLoaiPhuongTien,DonGiaTheoGio,MoTa,TrangThai,DanhSachViTriDoXe")] LoaiPhuongTien loaiphuongtien)
-    {
-        if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
-
-        if (await _context.LoaiPhuongTien.AnyAsync(l => l.TenLoaiPhuongTien == loaiphuongtien.TenLoaiPhuongTien))
+        // GET: LoaiPhuongTien
+        public async Task<IActionResult> Index()
         {
-            ModelState.AddModelError("TenLoaiPhuongTien", "Tên loại phương tiện đã tồn tại.");
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+            return View(await _context.LoaiPhuongTien.Include(l => l.DanhSachViTriDoXe).ToListAsync());
         }
 
-        if (ModelState.IsValid)
+        // GET: LoaiPhuongTien/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            _context.Add(loaiphuongtien);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        return View(loaiphuongtien);
-    }
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
 
-    // GET: LOAIPHUONGTIENS/Edit/5
-    public async Task<IActionResult> Edit(int? maloaiphuongtien)
-    {
-        if (maloaiphuongtien == null)
-        {
-            return NotFound();
-        }
-
-        var loaiphuongtien = await _context.LoaiPhuongTien.FindAsync(maloaiphuongtien);
-        if (loaiphuongtien == null)
-        {
-            return NotFound();
-        }
-        return View(loaiphuongtien);
-    }
-
-    // POST: LOAIPHUONGTIENS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? maloaiphuongtien, [Bind("MaLoaiPhuongTien,TenLoaiPhuongTien,DonGiaTheoGio,MoTa,TrangThai,DanhSachViTriDoXe")] LoaiPhuongTien loaiphuongtien)
-    {
-        if (maloaiphuongtien != loaiphuongtien.MaLoaiPhuongTien)
-        {
-            return NotFound();
-        }
-
-        if (ModelState.IsValid)
-        {
-            try
+            if (id == null)
             {
-                _context.Update(loaiphuongtien);
+                return NotFound();
+            }
+
+            var loaiphuongtien = await _context.LoaiPhuongTien
+                .Include(l => l.DanhSachViTriDoXe)
+                .FirstOrDefaultAsync(m => m.MaLoaiPhuongTien == id);
+
+            if (loaiphuongtien == null)
+            {
+                return NotFound();
+            }
+
+            return View(loaiphuongtien);
+        }
+
+        // GET: LoaiPhuongTien/Create
+        [HttpGet]
+        public IActionResult Create()
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+            return View();
+        }
+
+        // POST: LoaiPhuongTien/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("MaLoaiPhuongTien,TenLoaiPhuongTien,DonGiaTheoGio,MoTa,TrangThai")] LoaiPhuongTien loaiphuongtien)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
+            if (await _context.LoaiPhuongTien.AnyAsync(l => l.TenLoaiPhuongTien == loaiphuongtien.TenLoaiPhuongTien))
+            {
+                ModelState.AddModelError("TenLoaiPhuongTien", "Tên loại phương tiện đã tồn tại.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(loaiphuongtien);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(loaiphuongtien);
+        }
+
+        // GET: LoaiPhuongTien/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var loaiphuongtien = await _context.LoaiPhuongTien.FindAsync(id);
+            if (loaiphuongtien == null)
+            {
+                return NotFound();
+            }
+            return View(loaiphuongtien);
+        }
+
+        // POST: LoaiPhuongTien/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("MaLoaiPhuongTien,TenLoaiPhuongTien,DonGiaTheoGio,MoTa,TrangThai")] LoaiPhuongTien loaiphuongtien)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
+            if (id != loaiphuongtien.MaLoaiPhuongTien)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(loaiphuongtien);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!LoaiPhuongTienExists(loaiphuongtien.MaLoaiPhuongTien))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(loaiphuongtien);
+        }
+
+        // GET: LoaiPhuongTien/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var loaiphuongtien = await _context.LoaiPhuongTien
+                .Include(l => l.DanhSachViTriDoXe)
+                .FirstOrDefaultAsync(m => m.MaLoaiPhuongTien == id);
+
+            if (loaiphuongtien == null)
+            {
+                return NotFound();
+            }
+
+            return View(loaiphuongtien);
+        }
+
+        // POST: LoaiPhuongTien/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
+            var loaiphuongtien = await _context.LoaiPhuongTien.FindAsync(id);
+            if (loaiphuongtien != null)
+            {
+                _context.LoaiPhuongTien.Remove(loaiphuongtien);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LoaiPhuongTienExists(loaiphuongtien.MaLoaiPhuongTien))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
             return RedirectToAction(nameof(Index));
         }
-        return View(loaiphuongtien);
-    }
 
-    // GET: LOAIPHUONGTIENS/Delete/5
-    public async Task<IActionResult> Delete(int? maloaiphuongtien)
-    {
-        if (maloaiphuongtien == null)
+        private bool LoaiPhuongTienExists(int id)
         {
-            return NotFound();
+            return _context.LoaiPhuongTien.Any(e => e.MaLoaiPhuongTien == id);
         }
-
-        var loaiphuongtien = await _context.LoaiPhuongTien
-            .FirstOrDefaultAsync(m => m.MaLoaiPhuongTien == maloaiphuongtien);
-        if (loaiphuongtien == null)
-        {
-            return NotFound();
-        }
-
-        return View(loaiphuongtien);
-    }
-
-    // POST: LOAIPHUONGTIENS/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? maloaiphuongtien)
-    {
-        var loaiphuongtien = await _context.LoaiPhuongTien.FindAsync(maloaiphuongtien);
-        if (loaiphuongtien != null)
-        {
-            _context.LoaiPhuongTien.Remove(loaiphuongtien);
-        }
-
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
-    private bool LoaiPhuongTienExists(int? maloaiphuongtien)
-    {
-        return _context.LoaiPhuongTien.Any(e => e.MaLoaiPhuongTien == maloaiphuongtien);
     }
 }
