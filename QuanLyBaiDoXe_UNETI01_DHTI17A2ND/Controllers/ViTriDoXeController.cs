@@ -21,7 +21,16 @@ public class ViTriDoXeController : Controller
     }
 
     // Kiểm tra quyền Admin bằng Session
-    private bool IsAdmin() => HttpContext.Session.GetString("VaiTro") == "Admin";
+    private bool IsAdmin()
+    {
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        return !string.IsNullOrEmpty(vaiTro) && vaiTro == "Admin";
+    }
+
+    private bool IsLoggedIn()
+    {
+        return !string.IsNullOrEmpty(HttpContext.Session.GetString("MaTaiKhoan"));
+    }
 
     // =================================================================
     // 1. TÌM KIẾM + LỌC + SẮP XẾP + PHÂN TRANG (MỤC 6.3 -> 6.6)
@@ -37,6 +46,8 @@ public class ViTriDoXeController : Controller
             string? sortOrder,
             int pageIndex = 1)    
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "TaiKhoan");
+
         int pageSize = 5; // Số bản ghi hiển thị trên một trang
 
         // Query gốc kèm Navigation Property để hiển thị Tên loại xe (Mục 6.2)
@@ -78,6 +89,7 @@ public class ViTriDoXeController : Controller
         // 4. Phân trang LINQ Skip / Take trên Database (Mục 6.6)
         int totalItems = await query.CountAsync();
         int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+        pageIndex = Math.Max(1, Math.Min(pageIndex, totalPages > 0 ? totalPages : 1));
 
         var items = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
@@ -99,12 +111,15 @@ public class ViTriDoXeController : Controller
             TrangThaiList = new SelectList(new[] { "Còn trống", "Đang sử dụng", "Tạm ngừng" }, selectedTrangThai)
         };
 
-        return View(await _context.ViTriDoXe.ToListAsync());
+        // TRẢ VỀ MODEL FILTER THÀNH CÔNG
+        return View(model);
     }
 
     // GET: VITRIDOXES/Details/5
     public async Task<IActionResult> Details(int? mavitri)
     {
+        if (!IsLoggedIn()) return RedirectToAction("Login", "TaiKhoan");
+
         if (mavitri == null)
         {
             return NotFound();
@@ -127,7 +142,8 @@ public class ViTriDoXeController : Controller
     {
         if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
 
-        ViewData["MaLoaiPhuongTien"] = new SelectList(await _context.LoaiPhuongTien.Where(l => l.TrangThai).ToListAsync(), "MaLoaiPhuongTien", "TenLoaiPhuongTien");
+        ViewData["MaLoaiPhuongTien"] = new SelectList(await _context.LoaiPhuongTien
+            .Where(l => l.TrangThai).ToListAsync(), "MaLoaiPhuongTien", "TenLoaiPhuongTien");
         return View();
     }
 
@@ -185,7 +201,7 @@ public class ViTriDoXeController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? mavitri, [Bind("MaViTri,TenViTri,MaLoaiPhuongTien,LoaiPhuongTien,KhuVuc,Tang,TrangThai,MoTa")] ViTriDoXe vitridoxe)
+    public async Task<IActionResult> Edit(int mavitri, [Bind("MaViTri,TenViTri,MaLoaiPhuongTien,LoaiPhuongTien,KhuVuc,Tang,TrangThai,MoTa")] ViTriDoXe vitridoxe)
     {
         if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
 
@@ -231,6 +247,7 @@ public class ViTriDoXeController : Controller
     public async Task<IActionResult> Delete(int? mavitri)
     {
         if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
+
         if (mavitri == null)
         {
             return NotFound();
@@ -251,7 +268,7 @@ public class ViTriDoXeController : Controller
     // POST: VITRIDOXES/Delete/5 (Admin)
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? mavitri)
+    public async Task<IActionResult> DeleteConfirmed(int mavitri)
     {
         if (!IsAdmin()) return RedirectToAction("Login", "TaiKhoan");
 
