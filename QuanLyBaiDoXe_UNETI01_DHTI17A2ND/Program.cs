@@ -1,12 +1,26 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
-var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// 1. CẤU HÌNH DBCONTEXT VỚI SQL SERVER
+var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") 
+    ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+    options.UseSqlServer(connectionString));
+
+// 2. ĐĂNG KÝ SERVICE SESSION VÀ IN-MEMORY CACHE
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session hết hạn sau 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -21,14 +35,17 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+// 3. KÍCH HOẠT MIDDLEWARE SESSION (QUAN TRỌNG: Đặt trước UseAuthorization)
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// 4. ĐỊNH TUYẾN MẶC ĐỊNH VỀ TRANG ĐĂNG NHẬP (TAIKHOAN/LOGIN)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=TaiKhoan}/{action=Login}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

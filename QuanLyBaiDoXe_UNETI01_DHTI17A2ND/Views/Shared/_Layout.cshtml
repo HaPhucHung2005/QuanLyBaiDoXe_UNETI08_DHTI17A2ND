@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - QuanLyBaiDoXe_UNETI01_DHTI17A2ND</title>
+    <title>@ViewData["Title"] - Quản Lý Bãi Đỗ Xe UNETI</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -11,26 +14,57 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuanLyBaiDoXe_UNETI01_DHTI17A2ND</a>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="ViTriDoXe" asp-action="Index">🚗 QUẢN LÝ BÃI ĐỖ XE UNETI</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (Context.Session.GetString("VaiTro") == "Admin")
+                            {
+                            <!-- Menu dành cho Quản trị viên (Admin) -->
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="LoaiPhuongTien" asp-action="Index">Quản Lý Loại Xe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Quản Lý Vị Trí Đỗ</a>
+                            </li>
+                            }
+                        else if (Context.Session.GetString("MaTaiKhoan") != null)
+                            {
+                            <!-- Menu dành cho Khách hàng đã đăng nhập -->
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Tra Cứu Vị Trí Đỗ</a>
+                            </li>
+                            }
+                    </ul>
+
+                    <!-- Khối thông tin Tài khoản & Đăng xuất / Đăng nhập -->
+                    <ul class="navbar-nav">
+                            @if (Context.Session.GetString("MaTaiKhoan") != null)
+                            {
+                            <li class="nav-item d-flex align-items-center me-3 text-white">
+                                <span>Xin chào, <strong class="text-warning">@Context.Session.GetString("HoTen")</strong> (@Context.Session.GetString("VaiTro"))</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Logout">Đăng Xuất</a>
+                            </li>
+                            }
+                            else
+                            {
+                            <li class="nav-item">
+                                <a class="btn btn-light text-primary btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Login">Đăng Nhập</a>
+                            </li>
+                            }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -39,7 +73,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - QuanLyBaiDoXe_UNETI01_DHTI17A2ND - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - Hệ Thống Quản Lý Bãi Đỗ Xe - UNETI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
