@@ -1,52 +1,51 @@
+@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.LoaiPhuongTien
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh Sửa Loại Phương Tiện";
 }
 
-<h1>Edit</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6 card p-4 shadow-sm border-0 rounded-3">
+        <h3 class="text-primary fw-bold text-center mb-3">CHỈNH SỬA LOẠI PHƯƠNG TIỆN</h3>
+        <hr />
 
-<h4>LoaiPhuongTien</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" asp-route-id="@Model.MaLoaiPhuongTien" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <!-- Khóa chính ẩn -->
             <input type="hidden" asp-for="MaLoaiPhuongTien" />
-            <div class="form-group">
-                <label asp-for="TenLoaiPhuongTien" class="control-label"></label>
-                <input asp-for="TenLoaiPhuongTien" class="form-control" />
-                <span asp-validation-for="TenLoaiPhuongTien" class="text-danger"></span>
+
+            <div class="mb-3">
+                <label asp-for="TenLoaiPhuongTien" class="form-label fw-bold"></label>
+                <input asp-for="TenLoaiPhuongTien" class="form-control" placeholder="Nhập tên loại xe..." />
+                <span asp-validation-for="TenLoaiPhuongTien" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DonGiaTheoGio" class="control-label"></label>
-                <input asp-for="DonGiaTheoGio" class="form-control" />
-                <span asp-validation-for="DonGiaTheoGio" class="text-danger"></span>
+
+            <div class="mb-3">
+                <label asp-for="DonGiaTheoGio" class="form-label fw-bold"></label>
+                <input asp-for="DonGiaTheoGio" class="form-control" type="number" step="1000" placeholder="Nhập đơn giá gửi/giờ (VNĐ)..." />
+                <span asp-validation-for="DonGiaTheoGio" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MoTa" class="control-label"></label>
-                <input asp-for="MoTa" class="form-control" />
-                <span asp-validation-for="MoTa" class="text-danger"></span>
+
+            <div class="mb-3">
+                <label asp-for="MoTa" class="form-label fw-bold"></label>
+                <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập ghi chú mô tả..."></textarea>
+                <span asp-validation-for="MoTa" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TrangThai" class="control-label"></label>
-                <input asp-for="TrangThai" class="form-check-input" />
-                <span asp-validation-for="TrangThai" class="text-danger"></span>
+
+            <div class="mb-3 form-check">
+                <input class="form-check-input" asp-for="TrangThai" />
+                <label class="form-check-label fw-bold" asp-for="TrangThai">Đang hoạt động</label>
+                <span asp-validation-for="TrangThai" class="text-danger small"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DanhSachViTriDoXe" class="control-label"></label>
-                <input asp-for="DanhSachViTriDoXe" class="form-control" />
-                <span asp-validation-for="DanhSachViTriDoXe" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+                <button type="submit" class="btn btn-warning fw-bold px-4">Lưu Thay Đổi</button>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
