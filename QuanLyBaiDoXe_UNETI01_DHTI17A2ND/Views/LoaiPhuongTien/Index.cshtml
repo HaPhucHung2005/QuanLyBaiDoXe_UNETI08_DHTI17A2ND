@@ -1,17 +1,21 @@
 @* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
-
+@using Microsoft.AspNetCore.Http
 @model IEnumerable<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.LoaiPhuongTien>
 
 @{
     ViewData["Title"] = "Quản Lý Loại Phương Tiện";
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-primary fw-bold">QUẢN LÝ LOẠI PHƯƠNG TIỆN</h2>
-    <a asp-action="Create" class="btn btn-success fw-bold">+ Thêm Loại Phương Tiện</a>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-success fw-bold">+ Thêm Loại Phương Tiện</a>
+    }
 </div>
 
-<table class="table table-bordered table-hover align-middle shadow-sm">
+<table class="table table-bordered table-hover align-middle shadow-sm bg-white">
     <thead class="table-primary text-center">
         <tr>
             <th>
@@ -26,9 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.TrangThai)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DanhSachViTriDoXe)
-            </th>
+            <th>Số Vị Trí Đỗ</th>
             <th>Thao Tác</th>
         </tr>
     </thead>
@@ -45,7 +47,7 @@
                         @item.DonGiaTheoGio.ToString("N0") VNĐ
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.MoTa)
+                        @(string.IsNullOrEmpty(item.MoTa) ? "Chưa có mô tả" : item.MoTa)
                     </td>
                     <td class="text-center">
                         @if (item.TrangThai)
@@ -64,9 +66,12 @@
                     </td>
                     <td class="text-center">
                         <div class="btn-group btn-group-sm" role="group">
-                            <a asp-action="Edit" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-primary">Sửa</a>
                             <a asp-action="Details" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-info">Xem</a>
-                            <a asp-action="Delete" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-danger">Xóa</a>
+                            @if (isAdmin)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-primary">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@item.MaLoaiPhuongTien" class="btn btn-outline-danger">Xóa</a>
+                            }
                         </div>
                     </td>
                 </tr>
