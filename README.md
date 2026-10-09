@@ -15,5 +15,5 @@ Công việc:
 -  Xử lý lỗi khi phát sinh
 
 Môi trường kiểm thử:
-  Visual Studio 2022/2026
-  SQL Server 2022/2025 (Cả phiên bản SQLEXPRESS dùng cho cá nhân/doanh nghiệp nhỏ và MSSQLSERVER dùng cho doanh nghiệp lớn)
+-  Visual Studio 2022/2026
+-  SQL Server 2022/2025 (Cả phiên bản SQLEXPRESS dùng cho cá nhân/doanh nghiệp nhỏ và MSSQLSERVER dùng cho doanh nghiệp lớn)
