@@ -1,0 +1,94 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Đăng ký gửi xe dành cho Khách hàng (Module 3)
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe
+
+@{
+    ViewData["Title"] = "Đăng Ký Gửi Xe";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-primary mx-auto" style="max-width: 650px;">
+        <div class="card-header bg-primary text-white text-center fw-bold">
+            ĐĂNG KÝ GỬI XE
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                @* 1. Chọn phương tiện từ Dropdown *@
+                <div class="mb-3">
+                    <label asp-for="MaPhuongTien" class="form-label fw-bold"></label>
+                    <select asp-for="MaPhuongTien" class="form-select" asp-items="ViewBag.MaPhuongTien">
+                        <option value="">-- Chọn phương tiện của bạn --</option>
+                    </select>
+                    <span asp-validation-for="MaPhuongTien" class="text-danger"></span>
+                </div>
+
+                @* 2. Chọn vị trí đỗ xe (sẽ tự nạp danh sách bằng JS khi chọn phương tiện) *@
+                <div class="mb-3">
+                    <label asp-for="MaViTri" class="form-label fw-bold"></label>
+                    <select asp-for="MaViTri" class="form-select">
+                        <option value="">-- Vui lòng chọn phương tiện trước --</option>
+                    </select>
+                    <span asp-validation-for="MaViTri" class="text-danger"></span>
+                </div>
+
+                @* 3. Thời gian dự kiến vào / ra *@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ThoiGianDuKienVao" class="form-label fw-bold"></label>
+                        <input asp-for="ThoiGianDuKienVao" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="ThoiGianDuKienVao" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="ThoiGianDuKienRa" class="form-label fw-bold"></label>
+                        <input asp-for="ThoiGianDuKienRa" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="ThoiGianDuKienRa" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a asp-action="Index" class="btn btn-secondary me-2">Quay lại danh sách</a>
+                    <button type="submit" class="btn btn-success fw-bold">Xác Nhận Đăng Ký</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById("MaPhuongTien").addEventListener("change", function () {
+            var maPhuongTien = this.value;
+            var selectViTri = document.getElementById("MaViTri");
+            selectViTri.innerHTML = '<option value="">-- Đang tải vị trí đỗ phù hợp... --</option>';
+
+            if (maPhuongTien) {
+                fetch('/PhieuGuiXe/GetViTriByPhuongTien?maPhuongTien=' + maPhuongTien)
+                    .then(response => response.json())
+                    .then(data => {
+                        selectViTri.innerHTML = '<option value="">-- Chọn vị trí đỗ --</option>';
+                        if (data && data.length > 0) {
+                            data.forEach(item => {
+                                selectViTri.innerHTML += `<option value="${item.maViTri}">${item.tenViTri} (${item.khuVuc} - Tầng ${item.tang})</option>`;
+                            });
+                        } else {
+                            selectViTri.innerHTML = '<option value="">-- Không có vị trí đỗ phù hợp --</option>';
+                        }
+                    })
+                    .catch(error => {
+                        selectViTri.innerHTML = '<option value="">-- Lỗi tải danh sách vị trí --</option>';
+                    });
+            } else {
+                selectViTri.innerHTML = '<option value="">-- Vui lòng chọn phương tiện trước --</option>';
+            }
+        });
+    </script>
+}

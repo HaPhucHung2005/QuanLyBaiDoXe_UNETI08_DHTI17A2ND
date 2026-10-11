@@ -1,0 +1,87 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Xác nhận hủy / xóa phiếu gửi xe (Module 3)
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe
+
+@{
+    ViewData["Title"] = "Hủy Phiếu Gửi Xe";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-danger text-white text-center fw-bold">
+            XÁC NHẬN HỦY PHIẾU GỬI XE
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center text-danger mb-4">
+                Bạn có chắc chắn muốn hủy / xóa phiếu gửi xe này không?
+            </h5>
+
+            <dl class="row px-3">
+                <dt class="col-sm-4 fw-bold">Biển số xe:</dt>
+                <dd class="col-sm-8 text-primary fw-bold">
+                    @(Model.PhuongTien?.BienSoXe ?? Model.MaPhuongTien.ToString())
+                </dd>
+
+                <dt class="col-sm-4 fw-bold">Vị trí đỗ xe:</dt>
+                <dd class="col-sm-8">
+                    @(Model.ViTriDoXe?.TenViTri ?? Model.MaViTri.ToString())
+                    @if (Model.ViTriDoXe != null)
+                    {
+                        <span class="text-muted">(@Model.ViTriDoXe.KhuVuc - Tầng @Model.ViTriDoXe.Tang)</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-4 fw-bold">Ngày đăng ký:</dt>
+                <dd class="col-sm-8">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold">Thời gian dự kiến vào:</dt>
+                <dd class="col-sm-8">@Model.ThoiGianDuKienVao.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold">Thời gian dự kiến ra:</dt>
+                <dd class="col-sm-8">@Model.ThoiGianDuKienRa.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold">Đơn giá theo giờ:</dt>
+                <dd class="col-sm-8">@Model.DonGiaTheoGio.ToString("N0") VNĐ</dd>
+
+                <dt class="col-sm-4 fw-bold">Thành tiền:</dt>
+                <dd class="col-sm-8">
+                    @(Model.ThanhTien.HasValue ? Model.ThanhTien.Value.ToString("N0") + " VNĐ" : "Chưa tính")
+                </dd>
+
+                <dt class="col-sm-4 fw-bold">Trạng thái phiếu:</dt>
+                <dd class="col-sm-8">
+                    @if (Model.TrangThai == "Chờ xác nhận")
+                    {
+                        <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                    }
+                    else if (Model.TrangThai == "Đang gửi")
+                    {
+                        <span class="badge bg-info">Đang gửi</span>
+                    }
+                    else if (Model.TrangThai == "Đã lấy xe")
+                    {
+                        <span class="badge bg-success">Đã lấy xe</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@Model.TrangThai</span>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" class="text-center mt-4">
+                <input type="hidden" asp-for="MaPhieu" />
+                <a asp-action="Index" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+                <button type="submit" class="btn btn-danger fw-bold">
+                    Xác Nhận Hủy Phiếu
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

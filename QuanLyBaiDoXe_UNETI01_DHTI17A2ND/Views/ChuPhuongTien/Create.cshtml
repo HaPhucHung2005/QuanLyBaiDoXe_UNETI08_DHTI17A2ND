@@ -1,0 +1,101 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Thêm mới Chủ phương tiện (Module 3)
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien
+
+@{
+    ViewData["Title"] = "Thêm Chủ Phương Tiện";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-success mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-success text-white text-center fw-bold fs-5">
+            THÊM CHỦ PHƯƠNG TIỆN MỚI
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                @* 1. Chọn tài khoản liên kết *@
+                <div class="mb-3">
+                    <label asp-for="MaTaiKhoan" class="form-label fw-bold"></label>
+                    <select asp-for="MaTaiKhoan" class="form-select" asp-items="ViewBag.MaTaiKhoan">
+                        <option value="">-- Chọn tài khoản khách hàng --</option>
+                    </select>
+                    <span asp-validation-for="MaTaiKhoan" class="text-danger"></span>
+                </div>
+
+                @* 2. Họ và tên *@
+                <div class="mb-3">
+                    <label asp-for="HoTen" class="form-label fw-bold"></label>
+                    <input asp-for="HoTen" class="form-control" placeholder="Nhập họ và tên..." />
+                    <span asp-validation-for="HoTen" class="text-danger"></span>
+                </div>
+
+                @* 3. Ngày sinh & Giới tính *@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NgaySinh" class="form-label fw-bold"></label>
+                        <input asp-for="NgaySinh" type="date" class="form-control" />
+                        <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="GioiTinh" class="form-label fw-bold d-block"></label>
+                        <div class="form-check form-check-inline mt-2">
+                            <input class="form-check-input" type="radio" asp-for="GioiTinh" value="true" id="genderNam" checked />
+                            <label class="form-check-label" for="genderNam">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline mt-2">
+                            <input class="form-check-input" type="radio" asp-for="GioiTinh" value="false" id="genderNu" />
+                            <label class="form-check-label" for="genderNu">Nữ</label>
+                        </div>
+                        <span asp-validation-for="GioiTinh" class="text-danger d-block"></span>
+                    </div>
+                </div>
+
+                @* 4. Số điện thoại & Email *@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="SoDienThoai" class="form-label fw-bold"></label>
+                        <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại..." />
+                        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label fw-bold"></label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="example@gmail.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @* 5. Địa chỉ *@
+                <div class="mb-3">
+                    <label asp-for="DiaChi" class="form-label fw-bold"></label>
+                    <input asp-for="DiaChi" class="form-control" placeholder="Nhập địa chỉ cư trú..." />
+                    <span asp-validation-for="DiaChi" class="text-danger"></span>
+                </div>
+
+                @* 6. Trạng thái *@
+                <div class="mb-3">
+                    <label asp-for="TrangThai" class="form-label fw-bold"></label>
+                    <select asp-for="TrangThai" class="form-select">
+                        <option value="true">Đang hoạt động</option>
+                        <option value="false">Tạm khóa</option>
+                    </select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-action="Index" class="btn btn-secondary me-2">Quay lại danh sách</a>
+                    <button type="submit" class="btn btn-success fw-bold">Thêm Mới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
