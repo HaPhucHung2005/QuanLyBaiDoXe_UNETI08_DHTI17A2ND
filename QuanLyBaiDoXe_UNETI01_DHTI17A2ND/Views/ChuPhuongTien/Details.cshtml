@@ -1,0 +1,79 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Xem chi tiết thông tin Chủ phương tiện (Module 3)
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien
+
+@{
+    ViewData["Title"] = "Chi Tiết Chủ Phương Tiện";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-primary mx-auto" style="max-width: 750px;">
+        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
+            THÔNG TIN CHỦ PHƯƠNG TIỆN
+        </div>
+        <div class="card-body">
+            <dl class="row px-3 fs-6">
+                <dt class="col-sm-4 fw-bold mb-2">Mã chủ phương tiện:</dt>
+                <dd class="col-sm-8 mb-2">#@Model.MaChuPhuongTien</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Tài khoản liên kết:</dt>
+                <dd class="col-sm-8 mb-2 text-primary fw-bold">
+                    @(Model.TaiKhoan?.TenDangNhap ?? Model.MaTaiKhoan.ToString())
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Họ và tên:</dt>
+                <dd class="col-sm-8 mb-2 fw-bold text-dark">@Model.HoTen</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Ngày sinh:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Giới tính:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(Model.GioiTinh ? "Nam" : "Nữ")
+                </dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 fw-bold mb-2">Số điện thoại:</dt>
+                <dd class="col-sm-8 mb-2">@Model.SoDienThoai</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ Email:</dt>
+                <dd class="col-sm-8 mb-2">@Model.Email</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ cư trú:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(string.IsNullOrEmpty(Model.DiaChi) ? "Chưa cập nhật" : Model.DiaChi)
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Ngày đăng ký hệ thống:</dt>
+                <dd class="col-sm-8 mb-2">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Trạng thái tài khoản:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @if (Model.TrangThai)
+                    {
+                        <span class="badge bg-success px-3 py-2">Đang hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger px-3 py-2">Đã khóa</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer text-center bg-light py-3">
+            <a asp-action="Index" class="btn btn-secondary me-2">
+                Quay lại danh sách
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.MaChuPhuongTien" class="btn btn-warning fw-bold">
+                Chỉnh sửa thông tin
+            </a>
+        </div>
+    </div>
+</div>

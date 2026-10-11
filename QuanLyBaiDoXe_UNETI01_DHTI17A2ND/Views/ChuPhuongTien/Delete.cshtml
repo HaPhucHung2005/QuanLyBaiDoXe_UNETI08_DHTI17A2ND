@@ -1,0 +1,85 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Xác nhận xóa Chủ phương tiện (Module 3)
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien
+
+@{
+    ViewData["Title"] = "Xóa Chủ Phương Tiện";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow-sm mx-auto" style="max-width: 700px;">
+        <div class="card-header bg-danger text-white text-center fw-bold fs-5">
+            XÁC NHẬN XÓA CHỦ PHƯƠNG TIỆN
+        </div>
+        <div class="card-body">
+            <h5 class="card-title text-center text-danger mb-4">
+                Bạn có chắc chắn muốn xóa thông tin chủ phương tiện này không?
+            </h5>
+
+            <dl class="row px-3 fs-6">
+                <dt class="col-sm-4 fw-bold mb-2">Mã chủ phương tiện:</dt>
+                <dd class="col-sm-8 mb-2">#@Model.MaChuPhuongTien</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Tài khoản liên kết:</dt>
+                <dd class="col-sm-8 mb-2 text-primary fw-bold">
+                    @(Model.TaiKhoan?.TenDangNhap ?? Model.MaTaiKhoan.ToString())
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Họ và tên:</dt>
+                <dd class="col-sm-8 mb-2 fw-bold text-dark">@Model.HoTen</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Ngày sinh:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Giới tính:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(Model.GioiTinh ? "Nam" : "Nữ")
+                </dd>
+
+                <hr class="my-2" />
+
+                <dt class="col-sm-4 fw-bold mb-2">Số điện thoại:</dt>
+                <dd class="col-sm-8 mb-2">@Model.SoDienThoai</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ Email:</dt>
+                <dd class="col-sm-8 mb-2">@Model.Email</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ cư trú:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @(string.IsNullOrEmpty(Model.DiaChi) ? "Chưa cập nhật" : Model.DiaChi)
+                </dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Ngày đăng ký:</dt>
+                <dd class="col-sm-8 mb-2">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                <dt class="col-sm-4 fw-bold mb-2">Trạng thái:</dt>
+                <dd class="col-sm-8 mb-2">
+                    @if (Model.TrangThai)
+                    {
+                        <span class="badge bg-success px-3 py-2">Đang hoạt động</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger px-3 py-2">Đã khóa</span>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" class="text-center mt-4">
+                <input type="hidden" asp-for="MaChuPhuongTien" />
+                <a asp-action="Index" class="btn btn-secondary me-2">
+                    Quay lại danh sách
+                </a>
+                <button type="submit" class="btn btn-danger fw-bold">
+                    Xác Nhận Xóa
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
