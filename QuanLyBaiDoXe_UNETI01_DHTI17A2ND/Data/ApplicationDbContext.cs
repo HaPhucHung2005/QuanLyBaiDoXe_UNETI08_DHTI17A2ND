@@ -12,6 +12,11 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
+        // Module 3: Chủ phương tiện - Phương tiện - Phiếu gửi xe
+        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe> PhieuGuiXe { get; set; } = null!;
+        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien> PhuongTien { get; set; } = null!;
+        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien> ChuPhuongTien { get; set; } = null!;
+
         // Module 2: Vị trí đỗ xe
         public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe> ViTriDoXe { get; set; } = null!;
 
@@ -53,6 +58,49 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
                 new ViTriDoXe { MaViTri = 6, TenViTri = "B03", MaLoaiPhuongTien = 2, KhuVuc = "Khu B", Tang = 2, TrangThai = "Tạm ngừng", MoTa = "Đang bảo trì" },
                 new ViTriDoXe { MaViTri = 7, TenViTri = "C01", MaLoaiPhuongTien = 3, KhuVuc = "Khu C", Tang = 2, TrangThai = "Còn trống", MoTa = "Vị trí đỗ ô tô 7 chỗ" },
                 new ViTriDoXe { MaViTri = 8, TenViTri = "C02", MaLoaiPhuongTien = 3, KhuVuc = "Khu C", Tang = 2, TrangThai = "Còn trống", MoTa = "Vị trí đỗ ô tô 7 chỗ" }
+            );
+
+            // 5. Seed Data cho ChuPhuongTien (Gán với Tài khoản khachhang1 - MaTaiKhoan = 2)
+            modelBuilder.Entity<ChuPhuongTien>().HasData(
+                new ChuPhuongTien
+                {
+                    MaChuPhuongTien = 1,
+                    MaTaiKhoan = 2,
+                    HoTen = "Hà Phúc Hưng",
+                    NgaySinh = new DateTime(2003, 1, 1),
+                    GioiTinh = true,
+                    SoDienThoai = "0987654321",
+                    Email = "hung@gmail.com",
+                    DiaChi = "Hà Nội",
+                    NgayDangKy = new DateTime(2026, 1, 1),
+                    TrangThai = true
+                }
+            );
+
+            // 6. Seed Data cho PhuongTien (Tạo sẵn 1-2 xe cho khách hàng Hà Phúc Hưng)
+            modelBuilder.Entity<PhuongTien>().HasData(
+                new PhuongTien
+                {
+                    MaPhuongTien = 1,
+                    MaChuPhuongTien = 1,
+                    MaLoaiPhuongTien = 1, // Xe máy
+                    BienSoXe = "29A1-12345",
+                    NhanHieu = "Honda Wave",
+                    MauSac = "Đen",
+                    MoTa = "Xe đi học hàng ngày",
+                    TrangThai = true
+                },
+                new PhuongTien
+                {
+                    MaPhuongTien = 2,
+                    MaChuPhuongTien = 1,
+                    MaLoaiPhuongTien = 2, // Ô tô 4 chỗ
+                    BienSoXe = "30H-99999",
+                    NhanHieu = "Mazda 3",
+                    MauSac = "Trắng",
+                    MoTa = "Xe cá nhân",
+                    TrangThai = true
+                }
             );
         }
     }
