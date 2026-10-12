@@ -1,6 +1,9 @@
-﻿// Họ và tên: Hà Phúc Hưng
+﻿// =================================================================
+// Họ và tên: Trần Ngọc Minh
+// Mã sinh viên: [điền MSSV]
+// Nội dung: Module 3 - Entity PhieuGuiXe (thông tin đăng ký)
 // Mã sinh viên: 23203100001
-// Nội dung thực hiện: Entity PhieuGuiXe phục vụ Đăng ký gửi xe & Quản lý phiếu
+// =================================================================
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -24,24 +27,29 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 
         [Display(Name = "Ngày đăng ký")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime NgayDangKy { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Vui lòng chọn thời gian dự kiến vào")]
         [Display(Name = "Thời gian dự kiến vào")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime ThoiGianDuKienVao { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn thời gian dự kiến ra")]
         [Display(Name = "Thời gian dự kiến ra")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime ThoiGianDuKienRa { get; set; }
 
         [Display(Name = "Thời gian vào thực tế")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime? ThoiGianVaoThucTe { get; set; }
 
         [Display(Name = "Thời gian ra thực tế")]
         [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime? ThoiGianRaThucTe { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
@@ -52,9 +60,10 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Thành tiền")]
         public decimal? ThanhTien { get; set; }
 
+        [Required]
         [StringLength(30)]
         [Display(Name = "Trạng thái phiếu")]
-        public string TrangThai { get; set; } = "Chờ xác nhận"; // Các trạng thái: Chờ xác nhận, Đang gửi, Đã lấy xe, Đã hủy
+        public string TrangThai { get; set; } = TrangThaiPhieu.ChoXacNhan; // Các trạng thái: Chờ xác nhận, Đang gửi, Đã lấy xe, Đã hủy
 
         // Navigation Properties
         [ForeignKey("MaPhuongTien")]

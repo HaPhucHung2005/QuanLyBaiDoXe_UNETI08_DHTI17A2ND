@@ -1,6 +1,6 @@
 // =================================================================
-// Họ và tên: Hà Phúc Hưng
-// Mã sinh viên: 23203100001
+// Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+// Mã sinh viên: 23203100001 - [MSSV]
 // Nội dung thực hiện: Controller Đăng ký và Quản lý Phiếu gửi xe (Module 3)
 // =================================================================
 
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
-
+using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels;
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 {
     public class PhieuGuiXeController : Controller
@@ -26,7 +26,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         }
 
         // GET: PhieuGuiXe (Lịch sử gửi xe cho Khách hàng | Quản lý cho Admin)
-        public async Task<IActionResult> Index(string? trangThai)
+        public async Task<IActionResult> Index(string? trangThai,int pageIndex = 1)
         {
             var maTaiKhoan = HttpContext.Session.GetInt32("MaTaiKhoan");
             var vaiTro = HttpContext.Session.GetString("VaiTro");
@@ -55,14 +55,34 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
                 query = query.Where(p => p.PhuongTien!.MaChuPhuongTien == chuPhuongTien.MaChuPhuongTien);
             }
 
-            // Lọc theo trạng thái nếu có
+            // Thống kê số lượng phiếu theo từng trạng thái (Trước khi lọc theo trangThai)
+            var soLuongTheoTrangThai = await query
+                .GroupBy(p => p.TrangThai)
+                .Select(g => new { TrangThai = g.Key, SoLuong = g.Count() })
+                .ToDictionaryAsync(x => x.TrangThai, x => x.SoLuong);
+
+            // Lọc theo trạng thái nếu có chọn filter
             if (!string.IsNullOrWhiteSpace(trangThai))
             {
                 query = query.Where(p => p.TrangThai == trangThai);
             }
 
+            var dsPhieu = await query.OrderByDescending(p => p.NgayDangKy).ToListAsync();
+
+            // 💡 ĐÓNG GÓI VÀO ViewModel TRƯỚC KHI TRẢ VỀ VIEW
+            var viewModel = new LichSuGuiXeViewModel
+            {
+                DanhSach = dsPhieu,
+                TrangThai = trangThai,
+                SoLuongTheoTrangThai = soLuongTheoTrangThai,
+                PageIndex = pageIndex,
+                TotalPages = 1
+            };
+
             ViewBag.CurrentTrangThai = trangThai;
-            return View(await query.OrderByDescending(p => p.NgayDangKy).ToListAsync());
+
+            // SỬA DÒNG NÀY: Trả về viewModel thay vì dsPhieu/query
+            return View(viewModel);
         }
 
         // GET: PhieuGuiXe/Details/5
@@ -129,7 +149,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
             var defaultModel = new PhieuGuiXe
             {
                 ThoiGianDuKienVao = DateTime.Now,
-                ThoiGianDuKienRa = DateTime.Now.AddHours(2)
+                ThoiGianDuKienRa = DateTime.Now.AddHours(2),
             };
 
             return View(defaultModel);

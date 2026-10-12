@@ -1,9 +1,9 @@
 @*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
+    Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+    Mã sinh viên: 23203100001 - MSSV
     Nội dung thực hiện: Giao diện Xem chi tiết thông tin Chủ phương tiện (Module 3)
 *@
-
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien
 
 @{
@@ -11,7 +11,7 @@
 }
 
 <div class="container mt-4">
-    <div class="card shadow-sm border-primary mx-auto" style="max-width: 750px;">
+    <div class="card shadow-sm border-primary mx-auto mb-4" style="max-width: 800px;">
         <div class="card-header bg-primary text-white text-center fw-bold fs-5">
             THÔNG TIN CHỦ PHƯƠNG TIỆN
         </div>
@@ -35,7 +35,14 @@
 
                 <dt class="col-sm-4 fw-bold mb-2">Giới tính:</dt>
                 <dd class="col-sm-8 mb-2">
-                    @(Model.GioiTinh ? "Nam" : "Nữ")
+                    @if (Model.GioiTinh != null && (Model.GioiTinh.ToString().Equals("Nam", StringComparison.OrdinalIgnoreCase) || Model.GioiTinh.ToString().Equals("True", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <span>Nam</span>
+                    }
+                    else
+                    {
+                        <span>Nữ</span>
+                    }
                 </dd>
 
                 <hr class="my-2" />
@@ -44,7 +51,7 @@
                 <dd class="col-sm-8 mb-2">@Model.SoDienThoai</dd>
 
                 <dt class="col-sm-4 fw-bold mb-2">Địa chỉ Email:</dt>
-                <dd class="col-sm-8 mb-2">@Model.Email</dd>
+                <dd class="col-sm-8 mb-2">@(string.IsNullOrEmpty(Model.Email) ? "Chưa cập nhật" : Model.Email)</dd>
 
                 <dt class="col-sm-4 fw-bold mb-2">Địa chỉ cư trú:</dt>
                 <dd class="col-sm-8 mb-2">
@@ -56,7 +63,7 @@
 
                 <dt class="col-sm-4 fw-bold mb-2">Trạng thái tài khoản:</dt>
                 <dd class="col-sm-8 mb-2">
-                    @if (Model.TrangThai)
+                    @if (Model.TrangThai == TrangThaiTaiKhoan.DangHoatDong)
                     {
                         <span class="badge bg-success px-3 py-2">Đang hoạt động</span>
                     }
@@ -66,13 +73,57 @@
                     }
                 </dd>
             </dl>
+
+            @* Danh sách phương tiện thuộc sở hữu *@
+            <h5 class="fw-bold text-secondary mt-4 border-bottom pb-2">
+                <i class="bi bi-car-front-fill"></i> Danh sách phương tiện sở hữu (@(Model.PhuongTiens?.Count ?? 0))
+            </h5>
+            @if (Model.PhuongTiens != null && Model.PhuongTiens.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered table-hover align-middle mt-2">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th>Biển số xe</th>
+                                <th>Nhãn hiệu</th>
+                                <th>Màu sắc</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var xe in Model.PhuongTiens)
+                            {
+                                <tr>
+                                    <td class="text-center fw-bold text-primary">@xe.BienSoXe</td>
+                                    <td>@xe.NhanHieu</td>
+                                    <td>@xe.MauSac</td>
+                                    <td class="text-center">
+                                        @if (xe.TrangThai)
+                                        {
+                                            <span class="badge bg-success">Hoạt động</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Tạm ngừng</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted fst-italic">Chủ phương tiện này chưa đăng ký xe nào.</p>
+            }
         </div>
         <div class="card-footer text-center bg-light py-3">
             <a asp-action="Index" class="btn btn-secondary me-2">
-                Quay lại danh sách
+                <i class="bi bi-arrow-left"></i> Quay lại danh sách
             </a>
             <a asp-action="Edit" asp-route-id="@Model.MaChuPhuongTien" class="btn btn-warning fw-bold">
-                Chỉnh sửa thông tin
+                <i class="bi bi-pencil-square"></i> Chỉnh sửa thông tin
             </a>
         </div>
     </div>

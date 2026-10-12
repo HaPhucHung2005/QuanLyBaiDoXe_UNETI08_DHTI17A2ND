@@ -68,7 +68,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
                     MaTaiKhoan = 2,
                     HoTen = "Hà Phúc Hưng",
                     NgaySinh = new DateTime(2003, 1, 1),
-                    GioiTinh = true,
+                    GioiTinh = "Nam",
                     SoDienThoai = "0987654321",
                     Email = "hung@gmail.com",
                     DiaChi = "Hà Nội",

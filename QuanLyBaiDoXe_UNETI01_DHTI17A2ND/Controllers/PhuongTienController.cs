@@ -1,5 +1,5 @@
 // =================================================================
-// Họ và tên: Hà Phúc Hưng
+// Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
 // Mã sinh viên: 23203100001
 // Nội dung thực hiện: Controller Quản lý Phương tiện (Module 3)
 // =================================================================
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
+using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels;
 
 public class PhuongTienController : Controller
 {
@@ -20,7 +21,7 @@ public class PhuongTienController : Controller
     }
 
     // GET: PhuongTien (Admin xem tất cả + tìm kiếm | Khách hàng xem xe của mình)
-    public async Task<IActionResult> Index(string? keyword)
+    public async Task<IActionResult> Index(string? searchBienSo, string? searchChu, int? selectedMaLoai, string? trangThai, int pageIndex = 1)
     {
         var maTaiKhoan = HttpContext.Session.GetInt32("MaTaiKhoan");
         var vaiTro = HttpContext.Session.GetString("VaiTro");
@@ -30,42 +31,84 @@ public class PhuongTienController : Controller
             return RedirectToAction("Login", "TaiKhoan");
         }
 
-        // Nếu là Admin: Quản lý toàn bộ danh sách + Tìm kiếm
-        if (vaiTro == "Admin")
-        {
-            var query = _context.PhuongTien
-                .Include(p => p.ChuPhuongTien)
-                .Include(p => p.LoaiPhuongTien)
-                .AsQueryable();
+        var query = _context.PhuongTien
+            .Include(p => p.ChuPhuongTien)
+            .Include(p => p.LoaiPhuongTien)
+            .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(keyword))
+        // Nếu là Khách hàng: Lấy đúng xe thuộc về chủ phương tiện đăng nhập
+        if (vaiTro != "Admin")
+        {
+            var chuPhuongTien = await _context.ChuPhuongTien
+                .FirstOrDefaultAsync(c => c.MaTaiKhoan == maTaiKhoan.Value);
+
+            if (chuPhuongTien == null)
             {
-                var term = keyword.Trim().ToLower();
-                query = query.Where(p => p.BienSoXe.ToLower().Contains(term)
-                                      || p.NhanHieu!.ToLower().Contains(term)
-                                      || p.ChuPhuongTien!.HoTen.ToLower().Contains(term));
+                return NotFound("Không tìm thấy thông tin chủ phương tiện của bạn.");
             }
 
-            ViewBag.Keyword = keyword;
-            return View(await query.OrderByDescending(p => p.MaPhuongTien).ToListAsync());
+            query = query.Where(p => p.MaChuPhuongTien == chuPhuongTien.MaChuPhuongTien);
         }
-
-        // Nếu là Khách hàng: Lấy đúng Chủ phương tiện tương ứng với Session MaTaiKhoan
-        var chuPhuongTien = await _context.ChuPhuongTien
-            .FirstOrDefaultAsync(c => c.MaTaiKhoan == maTaiKhoan.Value);
-
-        if (chuPhuongTien == null)
+        else
         {
-            return NotFound("Không tìm thấy thông tin chủ phương tiện của bạn.");
+            // Bộ lọc nâng cao dành cho Admin
+            if (!string.IsNullOrWhiteSpace(searchChu))
+            {
+                var termChu = searchChu.Trim().ToLower();
+                query = query.Where(p => p.ChuPhuongTien!.HoTen.ToLower().Contains(termChu)
+                                      || p.ChuPhuongTien.SoDienThoai.Contains(termChu));
+            }
         }
 
-        var dsXeCuaToi = await _context.PhuongTien
-            .Include(p => p.LoaiPhuongTien)
-            .Where(p => p.MaChuPhuongTien == chuPhuongTien.MaChuPhuongTien)
-            .OrderByDescending(p => p.MaPhuongTien)
+        // 1. Lọc theo Biển số xe hoặc Nhãn hiệu
+        if (!string.IsNullOrWhiteSpace(searchBienSo))
+        {
+            var termBS = searchBienSo.Trim().ToLower();
+            query = query.Where(p => p.BienSoXe.ToLower().Contains(termBS)
+                                  || (p.NhanHieu != null && p.NhanHieu.ToLower().Contains(termBS)));
+        }
+
+        // 2. Lọc theo Loại phương tiện
+        if (selectedMaLoai.HasValue && selectedMaLoai.Value > 0)
+        {
+            query = query.Where(p => p.MaLoaiPhuongTien == selectedMaLoai.Value);
+        }
+
+        // 3. Lọc theo Trạng thái hoạt động
+        if (!string.IsNullOrWhiteSpace(trangThai))
+        {
+            if (trangThai == "hoatdong")
+            {
+                query = query.Where(p => p.TrangThai == TrangThaiHoatDong.HoatDong);
+            }
+            else if (trangThai == "tamngung")
+            {
+                query = query.Where(p => p.TrangThai == TrangThaiHoatDong.TamNgung);
+            }
+        }
+
+        var dsPhuongTien = await query.OrderByDescending(p => p.MaPhuongTien).ToListAsync();
+
+        // Lấy danh sách loại phương tiện nạp vào DropdownFilter
+        var dsLoaiXe = await _context.LoaiPhuongTien
+            .Where(l => l.TrangThai == TrangThaiHoatDong.HoatDong)
             .ToListAsync();
 
-        return View(dsXeCuaToi);
+        var viewModel = new PhuongTienFilterViewModel
+        {
+            DanhSach = dsPhuongTien,
+            SearchBienSo = searchBienSo,
+            SearchChu = searchChu,
+            SelectedMaLoai = selectedMaLoai,
+            TrangThai = trangThai,
+            PageIndex = pageIndex,
+            TotalPages = 1,
+            LoaiList = new SelectList(dsLoaiXe, "MaLoaiPhuongTien", "TenLoaiPhuongTien", selectedMaLoai)
+        };
+
+        ViewBag.Keyword = searchBienSo;
+
+        return View(viewModel);
     }
 
     // GET: PhuongTien/Details/5
@@ -165,11 +208,12 @@ public class PhuongTienController : Controller
         }
 
         ViewData["MaLoaiPhuongTien"] = new SelectList(
-            await _context.LoaiPhuongTien.Where(l => l.TrangThai).ToListAsync(),
+            await _context.LoaiPhuongTien.Where(l => l.TrangThai == TrangThaiHoatDong.HoatDong).ToListAsync(),
             "MaLoaiPhuongTien",
             "TenLoaiPhuongTien",
             phuongtien.MaLoaiPhuongTien
         );
+
         return View(phuongtien);
     }
 
@@ -201,7 +245,7 @@ public class PhuongTienController : Controller
         }
 
         ViewData["MaLoaiPhuongTien"] = new SelectList(
-            await _context.LoaiPhuongTien.Where(l => l.TrangThai).ToListAsync(),
+            await _context.LoaiPhuongTien.Where(l => l.TrangThai == TrangThaiHoatDong.HoatDong).ToListAsync(),
             "MaLoaiPhuongTien",
             "TenLoaiPhuongTien",
             phuongtien.MaLoaiPhuongTien
@@ -255,11 +299,12 @@ public class PhuongTienController : Controller
         }
 
         ViewData["MaLoaiPhuongTien"] = new SelectList(
-            await _context.LoaiPhuongTien.Where(l => l.TrangThai).ToListAsync(),
+            await _context.LoaiPhuongTien.Where(l => l.TrangThai == TrangThaiHoatDong.HoatDong).ToListAsync(),
             "MaLoaiPhuongTien",
             "TenLoaiPhuongTien",
             phuongtien.MaLoaiPhuongTien
         );
+
         return View(phuongtien);
     }
 
@@ -307,9 +352,10 @@ public class PhuongTienController : Controller
             return NotFound();
         }
 
-        // Nghiệp vụ bắt buộc: Không cho phép xóa nếu phương tiện đang có lượt gửi xe hoạt động
+        // Nghiệp vụ bắt buộc: Không cho phép xóa nếu phương tiện đang có lượt gửi xe hoạt động (Chờ xác nhận hoặc Đang gửi)
         bool isParkingActive = await _context.PhieuGuiXe
-            .AnyAsync(p => p.MaPhuongTien == id && (p.TrangThai == "Chờ xác nhận" || p.TrangThai == "Đang gửi"));
+            .AnyAsync(p => p.MaPhuongTien == id
+                        && (p.TrangThai == TrangThaiPhieu.ChoXacNhan || p.TrangThai == TrangThaiPhieu.DangGui));
 
         if (isParkingActive)
         {
