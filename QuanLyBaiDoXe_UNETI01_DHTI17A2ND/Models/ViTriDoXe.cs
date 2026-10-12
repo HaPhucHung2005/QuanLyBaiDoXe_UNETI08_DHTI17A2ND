@@ -1,6 +1,8 @@
-﻿// Họ và tên: Hà Phúc Hưng
+﻿// =================================================================
+// Họ và tên: Hà Phúc Hưng
 // Mã sinh viên: 23203100001
 // Nội dung thực hiện: Module 2 - Entity ViTriDoXe và Data Annotations
+// =================================================================
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,10 +12,11 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
     public class ViTriDoXe
     {
         [Key]
+        [Display(Name = "Mã vị trí")]
         public int MaViTri { get; set; }
 
         [Required(ErrorMessage = "Tên vị trí không được để trống")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "Tên vị trí không vượt quá 50 ký tự")]
         [Display(Name = "Tên vị trí")]
         public string TenViTri { get; set; } = null!;
 
@@ -22,24 +25,26 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public int MaLoaiPhuongTien { get; set; }
 
         // Lập khóa ngoại
-        // Khai báo khóa ngoại tới Entity LoaiPhuongTien (Không dùng [Required] ở đây)
+        // Khai báo khóa ngoại tới Entity LoaiPhuongTien (không dùng [Required] để tránh lỗi Validation form)
         [ForeignKey("MaLoaiPhuongTien")]
         [Display(Name = "Loại phương tiện")]
         public virtual LoaiPhuongTien? LoaiPhuongTien { get; set; }
 
         [Required(ErrorMessage = "Khu vực không được để trống")]
-        [StringLength(50)]
+        [StringLength(50, ErrorMessage = "Khu vực không vượt quá 50 ký tự")]
         [Display(Name = "Khu vực")]
         public string KhuVuc { get; set; } = null!;
 
         [Required(ErrorMessage = "Tầng không được để trống")]
         [Range(1, 100, ErrorMessage = "Tầng phải từ 1 đến 100")]
         [Display(Name = "Tầng")]
-        public int Tang { get; set; }
+        public int Tang { get; set; } = 1;
 
         [Required]
         [Display(Name = "Trạng thái")]
-        public string TrangThai { get; set; } = "Còn trống"; // "Còn trống", "Đang sử dụng", "Tạm ngừng"
+        // Sử dụng hằng số dùng chung "Còn trống"
+        // "Còn trống", "Đang sử dụng", "Tạm ngừng"
+        public string TrangThai { get; set; } = TrangThaiViTri.ConTrong;
 
         [Display(Name = "Mô tả")]
         [DataType(DataType.MultilineText)]
