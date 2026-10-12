@@ -1,11 +1,15 @@
 // =================================================================
 // Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
-// Mã sinh viên: 23203100001 - MSSV
-// Nội dung thực hiện: Khai báo DbContext, DbSet và Seed Data cho Module
+// Mã sinh viên: 23203100001 - [MSSV]
+// Nội dung thực hiện: Khai báo DbContext, DbSet, Fluent API Ràng buộc và Seed Data
 // =================================================================
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
+
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
 {
     public class ApplicationDbContext : DbContext
@@ -13,16 +17,16 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         // Module 3: Chủ phương tiện - Phương tiện - Phiếu gửi xe
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe> PhieuGuiXe { get; set; } = null!;
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien> PhuongTien { get; set; } = null!;
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien> ChuPhuongTien { get; set; } = null!;
+        public DbSet<PhieuGuiXe> PhieuGuiXe { get; set; } = null!;
+        public DbSet<PhuongTien> PhuongTien { get; set; } = null!;
+        public DbSet<ChuPhuongTien> ChuPhuongTien { get; set; } = null!;
 
         // Module 2: Vị trí đỗ xe
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe> ViTriDoXe { get; set; } = null!;
+        public DbSet<ViTriDoXe> ViTriDoXe { get; set; } = null!;
 
         // Module 1: Tài khoản & Loại phương tiện
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.LoaiPhuongTien> LoaiPhuongTien { get; set; } = null!;
-        public DbSet<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.TaiKhoan> TaiKhoan { get; set; } = null!;
+        public DbSet<LoaiPhuongTien> LoaiPhuongTien { get; set; } = null!;
+        public DbSet<TaiKhoan> TaiKhoan { get; set; } = null!;
 
         // Hàm tính phí gửi xe tĩnh dùng riêng cho Seed Data
         public static class QuyTacTinhPhi
@@ -62,7 +66,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
             // ChuPhuongTien (1) - (n) PhuongTien
             modelBuilder.Entity<PhuongTien>()
                 .HasOne(p => p.ChuPhuongTien)
-                .WithMany(c => c.DanhSachPhuongTien)
+                .WithMany(c => c.PhuongTiens) // Đã đồng bộ với ChuPhuongTien.cs
                 .HasForeignKey(p => p.MaChuPhuongTien)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -81,7 +85,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data
             // PhuongTien (1) - (n) PhieuGuiXe
             modelBuilder.Entity<PhieuGuiXe>()
                 .HasOne(p => p.PhuongTien)
-                .WithMany(x => x.DanhSachPhieuGuiXe)
+                .WithMany(x => x.PhieuGuiXes) // Đã đồng bộ với PhuongTien.cs
                 .HasForeignKey(p => p.MaPhuongTien)
                 .OnDelete(DeleteBehavior.Restrict);
 
