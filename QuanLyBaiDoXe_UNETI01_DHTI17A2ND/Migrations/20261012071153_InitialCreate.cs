@@ -80,10 +80,10 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     MaTaiKhoan = table.Column<int>(type: "int", nullable: false),
                     HoTen = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     NgaySinh = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    GioiTinh = table.Column<bool>(type: "bit", nullable: false),
+                    GioiTinh = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     SoDienThoai = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DiaChi = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    DiaChi = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     NgayDangKy = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TrangThai = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -185,7 +185,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
             migrationBuilder.InsertData(
                 table: "ChuPhuongTien",
                 columns: new[] { "MaChuPhuongTien", "DiaChi", "Email", "GioiTinh", "HoTen", "MaTaiKhoan", "NgayDangKy", "NgaySinh", "SoDienThoai", "TrangThai" },
-                values: new object[] { 1, "Hà Nội", "hung@gmail.com", true, "Hà Phúc Hưng", 2, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "0987654321", true });
+                values: new object[] { 1, "Hà Nội", "hung@gmail.com", "Nam", "Hà Phúc Hưng", 2, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "0987654321", true });
 
             migrationBuilder.InsertData(
                 table: "ViTriDoXe",

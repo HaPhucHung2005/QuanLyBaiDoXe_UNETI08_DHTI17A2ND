@@ -12,7 +12,7 @@ using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261010090830_InitialCreate")]
+    [Migration("20261012071153_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -34,6 +34,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaChuPhuongTien"));
 
                     b.Property<string>("DiaChi")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -42,8 +43,10 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("GioiTinh")
-                        .HasColumnType("bit");
+                    b.Property<string>("GioiTinh")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("HoTen")
                         .IsRequired()
@@ -79,7 +82,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                             MaChuPhuongTien = 1,
                             DiaChi = "Hà Nội",
                             Email = "hung@gmail.com",
-                            GioiTinh = true,
+                            GioiTinh = "Nam",
                             HoTen = "Hà Phúc Hưng",
                             MaTaiKhoan = 2,
                             NgayDangKy = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
