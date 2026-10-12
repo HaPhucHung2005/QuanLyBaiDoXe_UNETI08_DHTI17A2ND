@@ -1,6 +1,8 @@
-﻿// Họ và tên: Hà Phúc Hưng
-// Mã sinh viên: 23203100001
-// Nội dung thực hiện: Entity ChuPhuongTien cho Module 3
+﻿// =================================================================
+// Họ và tên: Trần Ngọc Minh
+// Mã sinh viên: [điền MSSV]
+// Nội dung thực hiện: Module 3 - Entity ChuPhuongTien và Data Annotations
+// =================================================================
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 {
-    public class ChuPhuongTien
+    public class ChuPhuongTien: IValidatableObject
     {
         [Key]
         [Display(Name = "Mã chủ phương tiện")]
@@ -19,7 +21,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public int MaTaiKhoan { get; set; }
 
         [Required(ErrorMessage = "Họ tên không được để trống")]
-        [StringLength(100)]
+        [StringLength(100, ErrorMessage = "Họ tên không quá 100 ký tự")]
         [Display(Name = "Họ và tên")]
         public string HoTen { get; set; } = string.Empty;
 
@@ -27,14 +29,17 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Ngày sinh")]
         public DateTime? NgaySinh { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        [StringLength(10)]
         [Display(Name = "Giới tính")]
-        public bool GioiTinh { get; set; } // true: Nam, false: Nữ
+        public string? GioiTinh { get; set; } = "Nam"; //Nam | Nữ | Khac
 
-        [Required(ErrorMessage = "Số điện thoại không được để trống")]
         [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
+        [Required(ErrorMessage = "Số điện thoại không được để trống")]
+        [RegularExpression(@"^(0|\+84)[0-9]{9}$", ErrorMessage = "Số điện thoại không hợp lệ (vd: 0912345678)")]
         [StringLength(15)]
         [Display(Name = "Số điện thoại")]
-        public string SoDienThoai { get; set; } = string.Empty;
+        public string SoDienThoai { get; set; } = null!;
 
         [Required(ErrorMessage = "Email không được để trống")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
@@ -42,22 +47,34 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Địa chỉ Email")]
         public string Email { get; set; } = string.Empty;
 
-        [StringLength(200)]
+        [Required(ErrorMessage = "Địa chỉ không được để trống")]
+        [StringLength(200, ErrorMessage = "Địa chỉ không quá 200 ký tự")]
         [Display(Name = "Địa chỉ")]
-        public string? DiaChi { get; set; }
+        public string DiaChi { get; set; } = null!;
 
+        // Do hệ thống gán, người dùng không nhập
         [DataType(DataType.DateTime)]
         [Display(Name = "Ngày đăng ký")]
         public DateTime NgayDangKy { get; set; } = DateTime.Now;
 
-        [Display(Name = "Trạng thái")]
+        [Display(Name = "Hoạt động")]
         public bool TrangThai { get; set; } = true;
 
-        // Navigation Properties - Khoa ngoai MaTaiKhoan
+        // Navigation Properties - Khoa ngoai
+        // Quan hệ 1-1 với TaiKhoan
         [ForeignKey("MaTaiKhoan")]
         public virtual TaiKhoan? TaiKhoan { get; set; }
 
         // Quan he lien quan
         public virtual ICollection<PhuongTien> PhuongTiens { get; set; } = new List<PhuongTien>();
+
+        // Ràng buộc ngày sinh hợp lệ (không phù hợp để dùng Data Annotation đơn thuần)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (NgaySinh!.Value.Date >= DateTime.Today)
+                yield return new ValidationResult("Ngày sinh phải nhỏ hơn ngày hiện tại", new[] { nameof(NgaySinh) });
+            else if (NgaySinh!.Value.Year < 1900)
+                yield return new ValidationResult("Ngày sinh không hợp lệ", new[] { nameof(NgaySinh) });
+        }
     }
 }
