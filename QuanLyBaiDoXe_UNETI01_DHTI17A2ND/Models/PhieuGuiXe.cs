@@ -1,8 +1,9 @@
-﻿// Họ và tên: Hà Phúc Hưng
-// Mã sinh viên: 23203100001
-// Nội dung thực hiện: Entity PhieuGuiXe phục vụ Đăng ký gửi xe & Quản lý phiếu
-
-using System;
+// =================================================================
+// Họ và tên: Trần Ngọc Minh - Mã sinh viên: [điền MSSV]
+//   Nội dung: Module 3 - Entity PhieuGuiXe (thông tin đăng ký)
+// Họ và tên: Trần Ngọc Minh - Mã sinh viên: [điền MSSV]
+//   Nội dung: Module 4 - Các trường thực tế vào/ra, đơn giá, thành tiền, trạng thái xử lý
+// =================================================================
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,56 +12,54 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
     public class PhieuGuiXe
     {
         [Key]
-        [Display(Name = "Mã phiếu")]
         public int MaPhieu { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn phương tiện")]
         [Display(Name = "Phương tiện")]
         public int MaPhuongTien { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn vị trí đỗ")]
-        [Display(Name = "Vị trí đỗ xe")]
+        [ForeignKey("MaPhuongTien")]
+        public virtual PhuongTien? PhuongTien { get; set; }
+
+        [Display(Name = "Vị trí đỗ")]
         public int MaViTri { get; set; }
 
-        [Display(Name = "Ngày đăng ký")]
-        [DataType(DataType.DateTime)]
-        public DateTime NgayDangKy { get; set; } = DateTime.Now;
+        [ForeignKey("MaViTri")]
+        public virtual ViTriDoXe? ViTriDoXe { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn thời gian dự kiến vào")]
-        [Display(Name = "Thời gian dự kiến vào")]
-        [DataType(DataType.DateTime)]
+        // Do hệ thống xác định, không cho người dùng nhập
+        [Display(Name = "Ngày đăng ký")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
+        public DateTime NgayDangKy { get; set; }
+
+        [Display(Name = "Dự kiến vào")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime ThoiGianDuKienVao { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng chọn thời gian dự kiến ra")]
-        [Display(Name = "Thời gian dự kiến ra")]
-        [DataType(DataType.DateTime)]
+        [Display(Name = "Dự kiến ra")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime ThoiGianDuKienRa { get; set; }
 
-        [Display(Name = "Thời gian vào thực tế")]
-        [DataType(DataType.DateTime)]
+        [Display(Name = "Vào thực tế")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime? ThoiGianVaoThucTe { get; set; }
 
-        [Display(Name = "Thời gian ra thực tế")]
-        [DataType(DataType.DateTime)]
+        [Display(Name = "Ra thực tế")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime? ThoiGianRaThucTe { get; set; }
 
+        // Lấy từ LoaiPhuongTien tại thời điểm đăng ký (lưu lại để đổi giá sau này không ảnh hưởng phiếu cũ)
         [Column(TypeName = "decimal(18,2)")]
-        [Display(Name = "Đơn giá theo giờ")]
+        [Display(Name = "Đơn giá / giờ")]
         public decimal DonGiaTheoGio { get; set; }
 
+        // Do hệ thống tính khi xác nhận xe ra; null nghĩa là chưa tính
         [Column(TypeName = "decimal(18,2)")]
         [Display(Name = "Thành tiền")]
         public decimal? ThanhTien { get; set; }
 
-        [StringLength(30)]
-        [Display(Name = "Trạng thái phiếu")]
-        public string TrangThai { get; set; } = "Chờ xác nhận"; // Các trạng thái: Chờ xác nhận, Đang gửi, Đã lấy xe, Đã hủy
-
-        // Navigation Properties
-        [ForeignKey("MaPhuongTien")]
-        public virtual PhuongTien? PhuongTien { get; set; }
-
-        [ForeignKey("MaViTri")]
-        public virtual ViTriDoXe? ViTriDoXe { get; set; }
+        [Required]
+        [StringLength(20)]
+        [Display(Name = "Trạng thái")]
+        public string TrangThai { get; set; } = TrangThaiPhieu.ChoXacNhan;
     }
 }

@@ -1,79 +1,9 @@
-@*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
-    Nội dung thực hiện: Giao diện Xác nhận xóa Phương tiện (Module 3)
-*@
-
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 3 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien
-
-@{
-    ViewData["Title"] = "Xóa Phương Tiện";
-}
-
-<div class="container mt-4">
-    <div class="card border-danger shadow-sm mx-auto" style="max-width: 700px;">
-        <div class="card-header bg-danger text-white text-center fw-bold fs-5">
-            XÁC NHẬN XÓA PHƯƠNG TIỆN
-        </div>
-        <div class="card-body">
-            <h5 class="card-title text-center text-danger mb-4">
-                Bạn có chắc chắn muốn xóa phương tiện này không?
-            </h5>
-
-            <dl class="row px-3 fs-6">
-                <dt class="col-sm-4 fw-bold mb-2">Mã phương tiện:</dt>
-                <dd class="col-sm-8 mb-2">#@Model.MaPhuongTien</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Biển số xe:</dt>
-                <dd class="col-sm-8 mb-2 text-primary fw-bold fs-5">@Model.BienSoXe</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Loại phương tiện:</dt>
-                <dd class="col-sm-8 mb-2 text-success fw-bold">
-                    @(Model.LoaiPhuongTien?.TenLoaiPhuongTien ?? Model.MaLoaiPhuongTien.ToString())
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Chủ phương tiện:</dt>
-                <dd class="col-sm-8 mb-2 fw-bold text-dark">
-                    @(Model.ChuPhuongTien?.HoTen ?? Model.MaChuPhuongTien.ToString())
-                    @if (Model.ChuPhuongTien != null)
-                    {
-                        <span class="text-muted fw-normal">(@Model.ChuPhuongTien.SoDienThoai)</span>
-                    }
-                </dd>
-
-                <hr class="my-2" />
-
-                <dt class="col-sm-4 fw-bold mb-2">Nhãn hiệu:</dt>
-                <dd class="col-sm-8 mb-2">@(string.IsNullOrEmpty(Model.NhanHieu) ? "Chưa cập nhật" : Model.NhanHieu)</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Màu sắc:</dt>
-                <dd class="col-sm-8 mb-2">@(string.IsNullOrEmpty(Model.MauSac) ? "Chưa cập nhật" : Model.MauSac)</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Mô tả:</dt>
-                <dd class="col-sm-8 mb-2">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có ghi chú" : Model.MoTa)</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Trạng thái xe:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @if (Model.TrangThai)
-                    {
-                        <span class="badge bg-success px-3 py-2">Hoạt động</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary px-3 py-2">Tạm ngừng</span>
-                    }
-                </dd>
-            </dl>
-
-            <form asp-action="Delete" class="text-center mt-4">
-                <input type="hidden" asp-for="MaPhuongTien" />
-                <a asp-action="Index" class="btn btn-secondary me-2">
-                    Quay lại danh sách
-                </a>
-                <button type="submit" class="btn btn-danger fw-bold">
-                    Xác Nhận Xóa
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
+@{ ViewData["Title"] = "Xóa phương tiện"; }
+<h2 class="text-danger fw-bold mb-3">Xóa phương tiện</h2>
+<div class="alert alert-warning">Bạn có chắc muốn xóa phương tiện <strong>@Model.BienSoXe</strong> (@Model.LoaiPhuongTien?.TenLoaiPhuongTien - @Model.ChuPhuongTien?.HoTen)?</div>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="MaPhuongTien" />
+    <button class="btn btn-danger">Xác nhận xóa</button> <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

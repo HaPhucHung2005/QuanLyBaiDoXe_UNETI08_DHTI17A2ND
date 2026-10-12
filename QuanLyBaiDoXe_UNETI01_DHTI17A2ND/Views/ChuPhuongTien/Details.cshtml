@@ -1,79 +1,32 @@
-@*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
-    Nội dung thực hiện: Giao diện Xem chi tiết thông tin Chủ phương tiện (Module 3)
-*@
-
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 3 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien
-
 @{
-    ViewData["Title"] = "Chi Tiết Chủ Phương Tiện";
+    ViewData["Title"] = "Chi tiết chủ phương tiện";
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
-
-<div class="container mt-4">
-    <div class="card shadow-sm border-primary mx-auto" style="max-width: 750px;">
-        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
-            THÔNG TIN CHỦ PHƯƠNG TIỆN
-        </div>
-        <div class="card-body">
-            <dl class="row px-3 fs-6">
-                <dt class="col-sm-4 fw-bold mb-2">Mã chủ phương tiện:</dt>
-                <dd class="col-sm-8 mb-2">#@Model.MaChuPhuongTien</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Tài khoản liên kết:</dt>
-                <dd class="col-sm-8 mb-2 text-primary fw-bold">
-                    @(Model.TaiKhoan?.TenDangNhap ?? Model.MaTaiKhoan.ToString())
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Họ và tên:</dt>
-                <dd class="col-sm-8 mb-2 fw-bold text-dark">@Model.HoTen</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Ngày sinh:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("dd/MM/yyyy") : "Chưa cập nhật")
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Giới tính:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @(Model.GioiTinh ? "Nam" : "Nữ")
-                </dd>
-
-                <hr class="my-2" />
-
-                <dt class="col-sm-4 fw-bold mb-2">Số điện thoại:</dt>
-                <dd class="col-sm-8 mb-2">@Model.SoDienThoai</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ Email:</dt>
-                <dd class="col-sm-8 mb-2">@Model.Email</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Địa chỉ cư trú:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @(string.IsNullOrEmpty(Model.DiaChi) ? "Chưa cập nhật" : Model.DiaChi)
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Ngày đăng ký hệ thống:</dt>
-                <dd class="col-sm-8 mb-2">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Trạng thái tài khoản:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @if (Model.TrangThai)
-                    {
-                        <span class="badge bg-success px-3 py-2">Đang hoạt động</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-danger px-3 py-2">Đã khóa</span>
-                    }
-                </dd>
-            </dl>
-        </div>
-        <div class="card-footer text-center bg-light py-3">
-            <a asp-action="Index" class="btn btn-secondary me-2">
-                Quay lại danh sách
-            </a>
-            <a asp-action="Edit" asp-route-id="@Model.MaChuPhuongTien" class="btn btn-warning fw-bold">
-                Chỉnh sửa thông tin
-            </a>
-        </div>
-    </div>
-</div>
+<h2 class="text-primary fw-bold mb-3">Thông tin chủ phương tiện</h2>
+<div class="card shadow-sm mb-3"><div class="card-body">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Họ và tên</dt><dd class="col-sm-9">@Model.HoTen</dd>
+        <dt class="col-sm-3">Tài khoản</dt><dd class="col-sm-9">@Model.TaiKhoan?.TenDangNhap</dd>
+        <dt class="col-sm-3">Ngày sinh</dt><dd class="col-sm-9">@Model.NgaySinh.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-3">Giới tính</dt><dd class="col-sm-9">@Model.GioiTinh</dd>
+        <dt class="col-sm-3">Số điện thoại</dt><dd class="col-sm-9">@Model.SoDienThoai</dd>
+        <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Địa chỉ</dt><dd class="col-sm-9">@Model.DiaChi</dd>
+        <dt class="col-sm-3">Ngày đăng ký</dt><dd class="col-sm-9">@Model.NgayDangKy.ToString("dd/MM/yyyy")</dd>
+        <dt class="col-sm-3">Trạng thái</dt><dd class="col-sm-9">@(Model.TrangThai ? "Đang hoạt động" : "Đã khóa")</dd>
+    </dl>
+</div></div>
+<h5>Phương tiện (@(Model.DanhSachPhuongTien?.Count ?? 0))</h5>
+<table class="table table-sm table-bordered bg-white">
+    <thead class="table-light"><tr><th>Biển số</th><th>Loại</th><th>Nhãn hiệu</th><th>Màu</th><th>Trạng thái</th></tr></thead>
+    <tbody>
+    @foreach (var p in Model.DanhSachPhuongTien ?? new List<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien>())
+    {
+        <tr><td>@p.BienSoXe</td><td>@p.LoaiPhuongTien?.TenLoaiPhuongTien</td><td>@p.NhanHieu</td><td>@p.MauSac</td><td>@(p.TrangThai ? "Hoạt động" : "Ngừng")</td></tr>
+    }
+    </tbody>
+</table>
+@if (isAdmin) { <a asp-action="Index" class="btn btn-secondary">← Danh sách</a> }
+else { <a asp-action="ThongTinCaNhan" class="btn btn-primary">Cập nhật thông tin</a> }

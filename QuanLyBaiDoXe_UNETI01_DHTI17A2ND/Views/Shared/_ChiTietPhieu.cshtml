@@ -1,0 +1,15 @@
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 4 *@
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe
+<div class="card shadow-sm mb-3"><div class="card-body"><dl class="row mb-0">
+    <dt class="col-sm-4">Mã phiếu</dt><dd class="col-sm-8">#@Model.MaPhieu</dd>
+    <dt class="col-sm-4">Trạng thái</dt><dd class="col-sm-8"><partial name="_TrangThaiPhieuBadge" model="Model.TrangThai" /></dd>
+    <dt class="col-sm-4">Biển số xe</dt><dd class="col-sm-8 fw-bold">@Model.PhuongTien?.BienSoXe (@Model.PhuongTien?.LoaiPhuongTien?.TenLoaiPhuongTien)</dd>
+    <dt class="col-sm-4">Chủ phương tiện</dt><dd class="col-sm-8">@Model.PhuongTien?.ChuPhuongTien?.HoTen</dd>
+    <dt class="col-sm-4">Vị trí đỗ</dt><dd class="col-sm-8">@Model.ViTriDoXe?.TenViTri - @Model.ViTriDoXe?.KhuVuc, tầng @Model.ViTriDoXe?.Tang</dd>
+    <dt class="col-sm-4">Ngày đăng ký</dt><dd class="col-sm-8">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
+    <dt class="col-sm-4">Dự kiến vào / ra</dt><dd class="col-sm-8">@Model.ThoiGianDuKienVao.ToString("dd/MM/yyyy HH:mm") → @Model.ThoiGianDuKienRa.ToString("dd/MM/yyyy HH:mm")</dd>
+    <dt class="col-sm-4">Vào thực tế</dt><dd class="col-sm-8">@(Model.ThoiGianVaoThucTe?.ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+    <dt class="col-sm-4">Ra thực tế</dt><dd class="col-sm-8">@(Model.ThoiGianRaThucTe?.ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+    <dt class="col-sm-4">Đơn giá / giờ</dt><dd class="col-sm-8">@Model.DonGiaTheoGio.ToString("N0") VNĐ</dd>
+    <dt class="col-sm-4">Thành tiền</dt><dd class="col-sm-8 fw-bold text-success">@(Model.ThanhTien.HasValue ? Model.ThanhTien.Value.ToString("N0") + " VNĐ" : "Chưa tính (tính khi xe ra)")</dd>
+</dl></div></div>

@@ -13,6 +13,10 @@ var connectionString = builder.Configuration.GetConnectionString("ApplicationDbC
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(connectionString));
 
+// Module 3 & 4: Service nghiệp vụ đăng ký gửi xe, xác nhận vào/ra, tính phí
+builder.Services.AddScoped<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Services.DangKyGuiXeService>();
+builder.Services.AddScoped<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Services.PhieuGuiXeService>();
+
 // 2. ĐĂNG KÝ SERVICE SESSION VÀ IN-MEMORY CACHE
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

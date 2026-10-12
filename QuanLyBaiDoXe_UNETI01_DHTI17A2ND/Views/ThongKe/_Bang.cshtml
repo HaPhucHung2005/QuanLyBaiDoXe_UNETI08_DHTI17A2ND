@@ -1,0 +1,17 @@
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 4 *@
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.ThongKeBang
+@{ int max = Model.Du.Any() ? Model.Du.Max(x => x.SoLuong) : 1; if (max == 0) { max = 1; } }
+<div class="card shadow-sm h-100"><div class="card-header fw-bold bg-primary text-white">@Model.TieuDe</div>
+<div class="card-body p-2">
+@if (!Model.Du.Any()) { <div class="text-muted text-center py-2">Chưa có dữ liệu</div> }
+else {
+    <table class="table table-sm mb-0 align-middle">
+    @foreach (var x in Model.Du)
+    {
+        <tr><td style="width:40%">@x.Nhan</td>
+            <td><div class="progress" style="height:14px"><div class="progress-bar" style="width:@(x.SoLuong * 100 / max)%"></div></div></td>
+            <td class="text-end fw-bold" style="width:50px">@x.SoLuong</td></tr>
+    }
+    </table>
+}
+</div></div>

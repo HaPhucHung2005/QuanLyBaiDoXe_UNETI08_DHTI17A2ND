@@ -1,105 +1,18 @@
-@*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
-    Nội dung thực hiện: Giao diện Xem chi tiết phiếu gửi xe (Module 3)
-*@
-
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 4 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe
-
-@{
-    ViewData["Title"] = "Chi Tiết Phiếu Gửi Xe";
-}
-
-<div class="container mt-4">
-    <div class="card shadow-sm border-primary mx-auto" style="max-width: 750px;">
-        <div class="card-header bg-primary text-white text-center fw-bold fs-5">
-            CHI TIẾT PHIẾU GỬI XE #@Model.MaPhieu
-        </div>
-        <div class="card-body">
-            <dl class="row px-3 fs-6">
-                <dt class="col-sm-4 fw-bold mb-2">Mã phiếu gửi:</dt>
-                <dd class="col-sm-8 mb-2">#@Model.MaPhieu</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Biển số xe:</dt>
-                <dd class="col-sm-8 mb-2 text-primary fw-bold">
-                    @(Model.PhuongTien?.BienSoXe ?? Model.MaPhuongTien.ToString())
-                    @if (Model.PhuongTien != null)
-                    {
-                        <span class="text-muted fw-normal">(@Model.PhuongTien.NhanHieu - @Model.PhuongTien.MauSac)</span>
-                    }
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Vị trí đỗ xe:</dt>
-                <dd class="col-sm-8 mb-2">
-                    <span class="fw-bold text-success">@(Model.ViTriDoXe?.TenViTri ?? Model.MaViTri.ToString())</span>
-                    @if (Model.ViTriDoXe != null)
-                    {
-                        <span class="text-muted">(@Model.ViTriDoXe.KhuVuc - Tầng @Model.ViTriDoXe.Tang)</span>
-                    }
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Ngày đăng ký:</dt>
-                <dd class="col-sm-8 mb-2">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <hr class="my-2" />
-
-                <dt class="col-sm-4 fw-bold mb-2">Thời gian dự kiến vào:</dt>
-                <dd class="col-sm-8 mb-2">@Model.ThoiGianDuKienVao.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Thời gian dự kiến ra:</dt>
-                <dd class="col-sm-8 mb-2">@Model.ThoiGianDuKienRa.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Thời gian vào thực tế:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @(Model.ThoiGianVaoThucTe.HasValue ? Model.ThoiGianVaoThucTe.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa vào bãi")
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Thời gian ra thực tế:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @(Model.ThoiGianRaThucTe.HasValue ? Model.ThoiGianRaThucTe.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa ra bãi")
-                </dd>
-
-                <hr class="my-2" />
-
-                <dt class="col-sm-4 fw-bold mb-2">Đơn giá theo giờ:</dt>
-                <dd class="col-sm-8 mb-2 text-danger fw-bold">@Model.DonGiaTheoGio.ToString("N0") VNĐ</dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Thành tiền:</dt>
-                <dd class="col-sm-8 mb-2 text-danger fw-bold fs-5">
-                    @(Model.ThanhTien.HasValue ? Model.ThanhTien.Value.ToString("N0") + " VNĐ" : "Chưa tính phí")
-                </dd>
-
-                <dt class="col-sm-4 fw-bold mb-2">Trạng thái phiếu:</dt>
-                <dd class="col-sm-8 mb-2">
-                    @if (Model.TrangThai == "Chờ xác nhận")
-                    {
-                        <span class="badge bg-warning text-dark px-3 py-2">Chờ xác nhận</span>
-                    }
-                    else if (Model.TrangThai == "Đang gửi")
-                    {
-                        <span class="badge bg-info text-white px-3 py-2">Đang gửi</span>
-                    }
-                    else if (Model.TrangThai == "Đã lấy xe")
-                    {
-                        <span class="badge bg-success px-3 py-2">Đã lấy xe</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary px-3 py-2">@Model.TrangThai</span>
-                    }
-                </dd>
-            </dl>
-        </div>
-        <div class="card-footer text-center bg-light py-3">
-            <a asp-action="Index" class="btn btn-secondary me-2">
-                Quay lại danh sách
-            </a>
-            @if (Model.TrangThai == "Chờ xác nhận")
-            {
-                <a asp-action="Delete" asp-route-id="@Model.MaPhieu" class="btn btn-danger">
-                    Hủy phiếu này
-                </a>
-            }
-        </div>
-    </div>
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
+@{ ViewData["Title"] = "Chi tiết phiếu gửi xe"; }
+<h2 class="text-primary fw-bold mb-3">Chi tiết phiếu gửi xe #@Model.MaPhieu</h2>
+<partial name="_ChiTietPhieu" model="Model" />
+<div class="d-flex gap-2">
+    @if (Model.TrangThai == TrangThaiPhieu.ChoXacNhan)
+    {
+        <form asp-action="XacNhanVao" asp-route-id="@Model.MaPhieu" method="post"><button class="btn btn-primary" onclick="return confirm('Xác nhận xe vào bãi?');">✅ Xác nhận xe vào</button></form>
+        <form asp-action="Huy" asp-route-id="@Model.MaPhieu" method="post"><button class="btn btn-outline-danger" onclick="return confirm('Hủy phiếu này?');">Hủy phiếu</button></form>
+    }
+    else if (Model.TrangThai == TrangThaiPhieu.DangGui)
+    {
+        <form asp-action="XacNhanRa" asp-route-id="@Model.MaPhieu" method="post"><button class="btn btn-success" onclick="return confirm('Xác nhận xe ra và tính phí?');">🚪 Xác nhận xe ra & tính phí</button></form>
+    }
+    <a asp-action="Index" class="btn btn-secondary">← Danh sách</a>
 </div>

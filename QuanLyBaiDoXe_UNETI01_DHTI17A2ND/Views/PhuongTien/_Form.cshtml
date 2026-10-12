@@ -1,0 +1,25 @@
+@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 3 *@
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{ bool isAdmin = Context.Session.GetString("VaiTro") == "Admin"; }
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@if (isAdmin)
+{
+    <div class="mb-3">
+        <label asp-for="MaChuPhuongTien" class="form-label"></label>
+        <select asp-for="MaChuPhuongTien" asp-items="@(ViewData["MaChuPhuongTien"] as SelectList)" class="form-select"><option value="">-- Chọn chủ phương tiện --</option></select>
+        <span asp-validation-for="MaChuPhuongTien" class="text-danger"></span>
+    </div>
+}
+<div class="mb-3">
+    <label asp-for="MaLoaiPhuongTien" class="form-label"></label>
+    <select asp-for="MaLoaiPhuongTien" asp-items="@(ViewData["MaLoaiPhuongTien"] as SelectList)" class="form-select"><option value="">-- Chọn loại phương tiện --</option></select>
+    <span asp-validation-for="MaLoaiPhuongTien" class="text-danger"></span>
+</div>
+<div class="mb-3"><label asp-for="BienSoXe" class="form-label"></label><input asp-for="BienSoXe" class="form-control" placeholder="VD: 29B1-12345" /><span asp-validation-for="BienSoXe" class="text-danger"></span></div>
+<div class="row">
+    <div class="col-md-6 mb-3"><label asp-for="NhanHieu" class="form-label"></label><input asp-for="NhanHieu" class="form-control" /><span asp-validation-for="NhanHieu" class="text-danger"></span></div>
+    <div class="col-md-6 mb-3"><label asp-for="MauSac" class="form-label"></label><input asp-for="MauSac" class="form-control" /><span asp-validation-for="MauSac" class="text-danger"></span></div>
+</div>
+<div class="mb-3"><label asp-for="MoTa" class="form-label"></label><textarea asp-for="MoTa" class="form-control" rows="3"></textarea></div>
+<div class="form-check form-switch mb-3"><input asp-for="TrangThai" class="form-check-input" /><label asp-for="TrangThai" class="form-check-label"></label></div>
