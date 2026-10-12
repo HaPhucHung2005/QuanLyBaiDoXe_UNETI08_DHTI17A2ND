@@ -5,6 +5,7 @@
 // =================================================================
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,15 +21,21 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Chủ phương tiện")]
         public int MaChuPhuongTien { get; set; }
 
+        [ForeignKey("MaChuPhuongTien")]
+        public virtual ChuPhuongTien? ChuPhuongTien { get; set; }
+
         [Required(ErrorMessage = "Vui lòng chọn loại phương tiện")]
         [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn loại phương tiện")]
         [Display(Name = "Loại phương tiện")]
         public int MaLoaiPhuongTien { get; set; }
 
+        [ForeignKey("MaLoaiPhuongTien")]
+        public virtual LoaiPhuongTien? LoaiPhuongTien { get; set; }
+
         [Required(ErrorMessage = "Biển số xe không được để trống")]
         [StringLength(20, ErrorMessage = "Biển số xe không quá 20 ký tự")]
         [Display(Name = "Biển số xe")]
-        public string BienSoXe { get; set; } = null!;
+        public string BienSoXe { get; set; } = string.Empty;
 
         [StringLength(50, ErrorMessage = "Nhãn hiệu không quá 50 ký tự")]
         [Display(Name = "Nhãn hiệu")]
@@ -45,17 +52,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Đang hoạt động")]
         public bool TrangThai { get; set; } = true;
 
-        // Navigation Properties - Khoa ngoai
-        // Quan he lien quan
-        [ForeignKey("MaChuPhuongTien")]
-        public virtual ChuPhuongTien? ChuPhuongTien { get; set; }
-
-        [ForeignKey("MaLoaiPhuongTien")]
-        public virtual LoaiPhuongTien? LoaiPhuongTien { get; set; }
-
+        // Navigation Property - Quan hệ 1-N với PhieuGuiXe (CHỈ GIỮ LẠI 1 THUỘC TÍNH NÀY)
         public virtual ICollection<PhieuGuiXe> PhieuGuiXes { get; set; } = new List<PhieuGuiXe>();
-        // Thêm thuộc tính quan hệ phục vụ cho Module-4
-        public virtual ICollection<PhuongTien> DanhSachPhuongTien { get; set; } = new List<PhuongTien>();
-        public virtual ICollection<PhieuGuiXe> DanhSachPhieuGuiXe { get; set; } = new List<PhieuGuiXe>();
     }
 }

@@ -5,12 +5,13 @@
 // =================================================================
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 {
-    public class ChuPhuongTien: IValidatableObject
+    public class ChuPhuongTien : IValidatableObject
     {
         [Key]
         [Display(Name = "Mã chủ phương tiện")]
@@ -32,7 +33,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Required(ErrorMessage = "Vui lòng chọn giới tính")]
         [StringLength(10)]
         [Display(Name = "Giới tính")]
-        public string? GioiTinh { get; set; } = "Nam"; //Nam | Nữ | Khac
+        public string? GioiTinh { get; set; } = "Nam"; // Nam | Nữ | Khác
 
         [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
         [Required(ErrorMessage = "Số điện thoại không được để trống")]
@@ -52,7 +53,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Địa chỉ")]
         public string DiaChi { get; set; } = null!;
 
-        // Do hệ thống gán, người dùng không nhập
         [DataType(DataType.DateTime)]
         [Display(Name = "Ngày đăng ký")]
         public DateTime NgayDangKy { get; set; } = DateTime.Now;
@@ -60,23 +60,23 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Display(Name = "Hoạt động")]
         public bool TrangThai { get; set; } = true;
 
-        // Navigation Properties - Khoa ngoai
-        // Quan hệ 1-1 với TaiKhoan
+        // Navigation Properties - Khóa ngoại 1-1 với TaiKhoan
         [ForeignKey("MaTaiKhoan")]
         public virtual TaiKhoan? TaiKhoan { get; set; }
 
-        // Quan he lien quan
+        // Quan hệ 1-N với PhuongTien (CHỈ GIỮ LẠI 1 THUỘC TÍNH NÀY)
         public virtual ICollection<PhuongTien> PhuongTiens { get; set; } = new List<PhuongTien>();
-        // Thêm thuộc tính này vào cuối file Models/ChuPhuongTien.cs
-        public virtual ICollection<PhuongTien> DanhSachPhuongTien { get; set; } = new List<PhuongTien>();
 
-        // Ràng buộc ngày sinh hợp lệ (không phù hợp để dùng Data Annotation đơn thuần)
+        // Ràng buộc ngày sinh hợp lệ
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (NgaySinh!.Value.Date >= DateTime.Today)
-                yield return new ValidationResult("Ngày sinh phải nhỏ hơn ngày hiện tại", new[] { nameof(NgaySinh) });
-            else if (NgaySinh!.Value.Year < 1900)
-                yield return new ValidationResult("Ngày sinh không hợp lệ", new[] { nameof(NgaySinh) });
+            if (NgaySinh.HasValue)
+            {
+                if (NgaySinh.Value.Date >= DateTime.Today)
+                    yield return new ValidationResult("Ngày sinh phải nhỏ hơn ngày hiện tại", new[] { nameof(NgaySinh) });
+                else if (NgaySinh.Value.Year < 1900)
+                    yield return new ValidationResult("Ngày sinh không hợp lệ", new[] { nameof(NgaySinh) });
+            }
         }
     }
 }
