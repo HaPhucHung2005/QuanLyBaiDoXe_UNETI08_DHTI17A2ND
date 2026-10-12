@@ -8,6 +8,7 @@
 
 @{
     ViewData["Title"] = "Chi Tiết Chủ Phương Tiện";
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
 
 <div class="container mt-4">
@@ -63,7 +64,7 @@
 
                 <dt class="col-sm-4 fw-bold mb-2">Trạng thái tài khoản:</dt>
                 <dd class="col-sm-8 mb-2">
-                    @if (Model.TrangThai == TrangThaiTaiKhoan.DangHoatDong)
+                    @if (Model.TrangThai)
                     {
                         <span class="badge bg-success px-3 py-2">Đang hoạt động</span>
                     }
@@ -119,9 +120,19 @@
             }
         </div>
         <div class="card-footer text-center bg-light py-3">
-            <a asp-action="Index" class="btn btn-secondary me-2">
-                <i class="bi bi-arrow-left"></i> Quay lại danh sách
-            </a>
+            @if (isAdmin)
+            {
+                <a asp-controller="ChuPhuongTien" asp-action="Index" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+            }
+            else
+            {
+                <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Quay lại Lịch sử gửi xe
+                </a>
+            }
+
             <a asp-action="Edit" asp-route-id="@Model.MaChuPhuongTien" class="btn btn-warning fw-bold">
                 <i class="bi bi-pencil-square"></i> Chỉnh sửa thông tin
             </a>
