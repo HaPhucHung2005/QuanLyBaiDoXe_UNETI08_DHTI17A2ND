@@ -54,5 +54,8 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         public virtual LoaiPhuongTien? LoaiPhuongTien { get; set; }
 
         public virtual ICollection<PhieuGuiXe> PhieuGuiXes { get; set; } = new List<PhieuGuiXe>();
+        // Thêm thuộc tính quan hệ phục vụ cho Module-4
+        public virtual ICollection<PhuongTien> DanhSachPhuongTien { get; set; } = new List<PhuongTien>();
+        public virtual ICollection<PhieuGuiXe> DanhSachPhieuGuiXe { get; set; } = new List<PhieuGuiXe>();
     }
 }

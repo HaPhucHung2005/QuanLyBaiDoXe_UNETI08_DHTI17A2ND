@@ -67,6 +67,8 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 
         // Quan he lien quan
         public virtual ICollection<PhuongTien> PhuongTiens { get; set; } = new List<PhuongTien>();
+        // Thêm thuộc tính này vào cuối file Models/ChuPhuongTien.cs
+        public virtual ICollection<PhuongTien> DanhSachPhuongTien { get; set; } = new List<PhuongTien>();
 
         // Ràng buộc ngày sinh hợp lệ (không phù hợp để dùng Data Annotation đơn thuần)
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
