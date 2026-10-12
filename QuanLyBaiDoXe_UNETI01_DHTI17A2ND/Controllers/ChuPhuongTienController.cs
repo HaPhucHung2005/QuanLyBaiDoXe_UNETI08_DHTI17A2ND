@@ -1,164 +1,238 @@
 // =================================================================
-// Họ và tên: Trần Ngọc Minh
-// Mã sinh viên: [điền MSSV]
-// Nội dung thực hiện: Module 3 - Quản lý chủ phương tiện: Admin xem/tìm kiếm/khóa-mở khóa,
-//                     Khách hàng xem và cập nhật thông tin cá nhân của mình
+// Họ và tên: Hà Phúc Hưng
+// Mã sinh viên: 23203100001
+// Nội dung thực hiện: Controller Quản lý Chủ phương tiện (Module 3)
 // =================================================================
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
-using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels;
 
-namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
+public class ChuPhuongTienController : Controller
 {
-    public class ChuPhuongTienController : AuthControllerBase
+    private readonly ApplicationDbContext _context;
+
+    public ChuPhuongTienController(ApplicationDbContext context)
     {
-        private readonly ApplicationDbContext _context;
-        private const int PageSize = 10;
+        _context = context;
+    }
 
-        public ChuPhuongTienController(ApplicationDbContext context)
+    // GET: CHUPHUONGTIENS (Admin xem danh sách & Tìm kiếm)
+    public async Task<IActionResult> Index(string? keyword)    
+    {
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        if (vaiTro != "Admin")
         {
-            _context = context;
+            return RedirectToAction("Index", "Home");
+        }
+        var query = _context.ChuPhuongTien
+            .Include(c => c.TaiKhoan)
+            .AsQueryable();
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            var term = keyword.Trim().ToLower();
+            query = query.Where(c => c.HoTen.ToLower().Contains(term)
+            || c.SoDienThoai.Contains(term)
+            || c.Email.ToLower().Contains(term));
         }
 
-        // GET: ChuPhuongTien  (Admin) - tìm kiếm + lọc + sắp xếp + phân trang bằng LINQ
-        public async Task<IActionResult> Index(string? search, string? trangThai, string? sortOrder, int pageIndex = 1)
+        ViewBag.Keyword = keyword;
+        return View(await query.OrderByDescending(c=>c.MaChuPhuongTien).ToListAsync());
+    }
+
+    // GET: CHUPHUONGTIENS/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        var maTaiKhoanSession = HttpContext.Session.GetInt32("MaTaiKhoan");
+        var vaiTroSession = HttpContext.Session.GetString("VaiTro");
+
+        if (maTaiKhoanSession == null)
         {
-            if (!IsLoggedIn) return ChuaDangNhap();
-            if (!IsAdmin) return KhongCoQuyen("Chỉ Admin được xem danh sách chủ phương tiện.");
-
-            var query = _context.ChuPhuongTien.Include(c => c.DanhSachPhuongTien).AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                var kw = search.Trim();
-                query = query.Where(c => c.HoTen.Contains(kw) || c.SoDienThoai.Contains(kw) || c.Email.Contains(kw));
-            }
-
-            if (trangThai == "hoatdong") query = query.Where(c => c.TrangThai);
-            else if (trangThai == "khoa") query = query.Where(c => !c.TrangThai);
-
-            query = sortOrder switch
-            {
-                "ten_desc" => query.OrderByDescending(c => c.HoTen),
-                "ngay_desc" => query.OrderByDescending(c => c.NgayDangKy),
-                "ngay_asc" => query.OrderBy(c => c.NgayDangKy),
-                _ => query.OrderBy(c => c.HoTen)
-            };
-
-            int total = await query.CountAsync();
-            int totalPages = (int)Math.Ceiling(total / (double)PageSize);
-            pageIndex = Math.Max(1, Math.Min(pageIndex, Math.Max(totalPages, 1)));
-
-            var vm = new ChuPhuongTienFilterViewModel
-            {
-                DanhSach = await query.Skip((pageIndex - 1) * PageSize).Take(PageSize).ToListAsync(),
-                Search = search,
-                TrangThai = trangThai,
-                SortOrder = sortOrder,
-                PageIndex = pageIndex,
-                TotalPages = totalPages
-            };
-            return View(vm);
+            return RedirectToAction("Login", "TaiKhoan");
         }
+        ChuPhuongTien? chuPhuongTien;
 
-        // GET: ChuPhuongTien/Details/5  (Admin xem tất cả; khách hàng chỉ xem của mình)
-        public async Task<IActionResult> Details(int? id)
+        if (vaiTroSession == "Admin" && id.HasValue)
         {
-            if (!IsLoggedIn) return ChuaDangNhap();
-            if (id == null) return NotFound();
-
-            var chu = await _context.ChuPhuongTien
+            chuPhuongTien = await _context.ChuPhuongTien
                 .Include(c => c.TaiKhoan)
-                .Include(c => c.DanhSachPhuongTien)!.ThenInclude(p => p.LoaiPhuongTien)
-                .FirstOrDefaultAsync(c => c.MaChuPhuongTien == id);
-            if (chu == null) return NotFound();
-
-            if (!IsAdmin && chu.MaTaiKhoan != MaTaiKhoan) return NotFound(); // không lộ dữ liệu người khác
-            return View(chu);
+                .FirstOrDefaultAsync(m => m.MaChuPhuongTien == id.Value);
+        }
+        else
+        {
+            chuPhuongTien = await _context.ChuPhuongTien
+                .Include(c => c.TaiKhoan)
+                .FirstOrDefaultAsync(m => m.MaTaiKhoan == maTaiKhoanSession.Value);
         }
 
-        // POST: ChuPhuongTien/CapNhatTrangThai/5  (Admin) - khóa / mở khóa
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CapNhatTrangThai(int id)
+        if (chuPhuongTien == null)
         {
-            if (!IsLoggedIn) return ChuaDangNhap();
-            if (!IsAdmin) return KhongCoQuyen();
+            return NotFound();
+        }
 
-            var chu = await _context.ChuPhuongTien.FindAsync(id);
-            if (chu == null) return NotFound();
+        return View(chuPhuongTien);
+    }
 
-            chu.TrangThai = !chu.TrangThai;
+    // GET: CHUPHUONGTIENS/Create
+    public IActionResult Create()
+    {
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        if (vaiTro != "Admin")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
+            , "MaTaiKhoan", "TenDangNhap");
+        return View();
+    }
+
+    // POST: CHUPHUONGTIENS/Create
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create([Bind("MaChuPhuongTien,MaTaiKhoan,HoTen,NgaySinh,GioiTinh,SoDienThoai,Email,DiaChi,NgayDangKy,TrangThai,TaiKhoan,PhuongTiens")] ChuPhuongTien chuphuongtien)
+    {
+        // Loại bỏ kiểm tra ModelState cho thuộc tính Navigation
+        ModelState.Remove("TaiKhoan");
+        ModelState.Remove("PhuongTiens");
+
+        if (ModelState.IsValid)
+        {
+            chuphuongtien.NgayDangKy = DateTime.Now;
+            _context.Add(chuphuongtien);
             await _context.SaveChangesAsync();
-            TempData["ThongBao"] = $"Đã {(chu.TrangThai ? "mở khóa" : "khóa")} chủ phương tiện {chu.HoTen}.";
+            return RedirectToAction(nameof(Index));
+        }
+        return View(chuphuongtien);
+    }
+
+    // GET: CHUPHUONGTIENS/Edit/5
+    public async Task<IActionResult> Edit(int? id)
+    {
+        var maTaiKhoanSession = HttpContext.Session.GetInt32("MaTaiKhoan");
+        var vaiTroSession = HttpContext.Session.GetString("VaiTro");
+
+        if (maTaiKhoanSession == null)
+        {
+            return RedirectToAction("Login", "TaiKhoan");
+        }
+
+        ChuPhuongTien? chuphuongtien;
+
+        if (vaiTroSession == "Admin" && id.HasValue)
+        {
+            chuphuongtien = await _context.ChuPhuongTien.FindAsync(id.Value);
+        }
+        else
+        {
+            chuphuongtien = await _context.ChuPhuongTien
+                .FirstOrDefaultAsync(c => c.MaTaiKhoan == maTaiKhoanSession.Value);
+        }
+
+        if (chuphuongtien == null)
+        {
+            return NotFound();
+        }
+
+        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
+            , "MaTaiKhoan", "TenDangNhap", chuphuongtien.MaTaiKhoan);
+        return View(chuphuongtien);
+    }
+
+    // POST: CHUPHUONGTIENS/Edit/5
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int? id, [Bind("MaChuPhuongTien,MaTaiKhoan,HoTen,NgaySinh,GioiTinh,SoDienThoai,Email,DiaChi,NgayDangKy,TrangThai,TaiKhoan,PhuongTiens")] ChuPhuongTien chuphuongtien)
+    {
+        if (id != chuphuongtien.MaChuPhuongTien)
+        {
+            return NotFound();
+        }
+
+        ModelState.Remove("TaiKhoan");
+        ModelState.Remove("PhuongTiens");
+
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                _context.Update(chuphuongtien);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ChuPhuongTienExists(chuphuongtien.MaChuPhuongTien))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: ChuPhuongTien/ThongTinCaNhan  (Khách hàng)
-        [HttpGet]
-        public async Task<IActionResult> ThongTinCaNhan()
-        {
-            if (!IsLoggedIn) return ChuaDangNhap();
-            if (IsAdmin)
-            {
-                TempData["Loi"] = "Tài khoản Admin không có hồ sơ chủ phương tiện.";
-                return RedirectToAction(nameof(Index));
-            }
+        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
+            , "MaTaiKhoan", "TenDangNhap", chuphuongtien.MaTaiKhoan);
+        return View(chuphuongtien);
+    }
 
-            int maTK = MaTaiKhoan!.Value;
-            var chu = await _context.ChuPhuongTien.AsNoTracking().FirstOrDefaultAsync(c => c.MaTaiKhoan == maTK);
-            if (chu == null)
-            {
-                // Lần đầu: gợi ý sẵn họ tên/email từ tài khoản
-                var tk = await _context.TaiKhoan.AsNoTracking().FirstOrDefaultAsync(t => t.MaTaiKhoan == maTK);
-                chu = new ChuPhuongTien
-                {
-                    MaTaiKhoan = maTK,
-                    HoTen = tk?.HoTen ?? "",
-                    Email = tk?.Email ?? "",
-                    NgaySinh = new DateTime(2000, 1, 1),
-                    GioiTinh = "Nam"
-                };
-            }
-            return View(chu);
+    // GET: CHUPHUONGTIENS/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        if (vaiTro != "Admin")
+        {
+            return RedirectToAction("Index", "Home");
         }
 
-        // POST: ChuPhuongTien/ThongTinCaNhan
-        // Chỉ bind các trường được phép sửa: khách hàng KHÔNG được tự đổi trạng thái, ngày đăng ký, tài khoản.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ThongTinCaNhan(
-            [Bind("HoTen,NgaySinh,GioiTinh,SoDienThoai,Email,DiaChi")] ChuPhuongTien model)
+        if (id == null)
         {
-            if (!IsLoggedIn) return ChuaDangNhap();
-            if (IsAdmin) return KhongCoQuyen("Tài khoản Admin không có hồ sơ chủ phương tiện.");
+            return NotFound();
+        }
 
-            int maTK = MaTaiKhoan!.Value;
-            if (!ModelState.IsValid)
-            {
-                model.MaTaiKhoan = maTK;
-                return View(model);
-            }
+        var chuphuongtien = await _context.ChuPhuongTien
+            .Include(c => c.TaiKhoan)
+            .FirstOrDefaultAsync(m => m.MaChuPhuongTien == id.Value);
 
-            var chu = await _context.ChuPhuongTien.FirstOrDefaultAsync(c => c.MaTaiKhoan == maTK);
-            if (chu == null)
-            {
-                chu = new ChuPhuongTien { MaTaiKhoan = maTK, NgayDangKy = DateTime.Now, TrangThai = true };
-                _context.ChuPhuongTien.Add(chu);
-            }
+        if (chuphuongtien == null)
+        {
+            return NotFound();
+        }
 
-            chu.HoTen = model.HoTen.Trim();
-            chu.NgaySinh = model.NgaySinh;
-            chu.GioiTinh = model.GioiTinh;
-            chu.SoDienThoai = model.SoDienThoai.Trim();
-            chu.Email = model.Email.Trim();
-            chu.DiaChi = model.DiaChi.Trim();
+        return View(chuphuongtien);
+    }
 
+    // POST: CHUPHUONGTIENS/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        if (vaiTro != "Admin")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        var chuphuongtien = await _context.ChuPhuongTien.FindAsync(id);
+        if (chuphuongtien != null)
+        {
+            _context.ChuPhuongTien.Remove(chuphuongtien);
             await _context.SaveChangesAsync();
-            TempData["ThongBao"] = "Đã lưu thông tin cá nhân.";
-            return RedirectToAction(nameof(ThongTinCaNhan));
         }
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool ChuPhuongTienExists(int id)
+    {
+        return _context.ChuPhuongTien.Any(e => e.MaChuPhuongTien == id);
     }
 }

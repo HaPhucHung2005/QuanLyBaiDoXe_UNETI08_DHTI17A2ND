@@ -1,11 +1,84 @@
-@* Họ và tên: Trần Ngọc Minh - Mã SV: [điền MSSV] - Module 3 *@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Giao diện Chỉnh sửa thông tin Phương tiện (Module 3)
+*@
+
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien
-@using Microsoft.AspNetCore.Mvc.Rendering
-@{ ViewData["Title"] = "Sửa phương tiện"; }
-<h2 class="text-primary fw-bold mb-3">Sửa phương tiện</h2>
-<form asp-action="Edit" method="post" class="card p-4 shadow-sm col-md-8">
-    <input type="hidden" asp-for="MaPhuongTien" />
-    <partial name="_Form" model="Model" />
-    <div><button class="btn btn-primary fw-bold">Cập nhật</button> <a asp-action="Index" class="btn btn-secondary">Hủy</a></div>
-</form>
-@section Scripts { <partial name="_ValidationScriptsPartial" /> }
+
+@{
+    ViewData["Title"] = "Chỉnh Sửa Phương Tiện";
+}
+
+<div class="container mt-4">
+    <div class="card shadow border-warning mx-auto" style="max-width: 650px;">
+        <div class="card-header bg-warning text-dark text-center fw-bold fs-5">
+            CHỈNH SỬA THÔNG TIN PHƯƠNG TIỆN
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                @* Khóa chính và Mã chủ phương tiện được giữ nguyên *@
+                <input type="hidden" asp-for="MaPhuongTien" />
+                <input type="hidden" asp-for="MaChuPhuongTien" />
+
+                @* 1. Chọn loại phương tiện *@
+                <div class="mb-3">
+                    <label asp-for="MaLoaiPhuongTien" class="form-label fw-bold"></label>
+                    <select asp-for="MaLoaiPhuongTien" class="form-select" asp-items="ViewBag.MaLoaiPhuongTien">
+                        <option value="">-- Chọn loại phương tiện --</option>
+                    </select>
+                    <span asp-validation-for="MaLoaiPhuongTien" class="text-danger"></span>
+                </div>
+
+                @* 2. Biển số xe *@
+                <div class="mb-3">
+                    <label asp-for="BienSoXe" class="form-label fw-bold"></label>
+                    <input asp-for="BienSoXe" class="form-control" placeholder="Ví dụ: 29A1-12345" />
+                    <span asp-validation-for="BienSoXe" class="text-danger"></span>
+                </div>
+
+                @* 3. Nhãn hiệu & Màu sắc *@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NhanHieu" class="form-label fw-bold"></label>
+                        <input asp-for="NhanHieu" class="form-control" placeholder="Ví dụ: Honda Wave, Mazda 3" />
+                        <span asp-validation-for="NhanHieu" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MauSac" class="form-label fw-bold"></label>
+                        <input asp-for="MauSac" class="form-control" placeholder="Ví dụ: Đen, Trắng" />
+                        <span asp-validation-for="MauSac" class="text-danger"></span>
+                    </div>
+                </div>
+
+                @* 4. Mô tả *@
+                <div class="mb-3">
+                    <label asp-for="MoTa" class="form-label fw-bold"></label>
+                    <textarea asp-for="MoTa" class="form-control" rows="2" placeholder="Ghi chú thêm về xe..."></textarea>
+                    <span asp-validation-for="MoTa" class="text-danger"></span>
+                </div>
+
+                @* 5. Trạng thái *@
+                <div class="mb-3">
+                    <label asp-for="TrangThai" class="form-label fw-bold"></label>
+                    <select asp-for="TrangThai" class="form-select">
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Tạm ngừng</option>
+                    </select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-action="Index" class="btn btn-secondary me-2">Quay lại danh sách</a>
+                    <button type="submit" class="btn btn-warning fw-bold">Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

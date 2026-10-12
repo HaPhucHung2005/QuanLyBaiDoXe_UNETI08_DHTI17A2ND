@@ -1,4 +1,9 @@
-﻿@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+﻿@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Layout chung tích hợp Menu điều hướng đầy đủ các Module (Module 1, 2, 3)
+*@
+
 @using Microsoft.AspNetCore.Http
 
 <!DOCTYPE html>
@@ -9,6 +14,7 @@
     <title>@ViewData["Title"] - Quản Lý Bãi Đỗ Xe UNETI</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuanLyBaiDoXe_UNETI01_DHTI17A2ND.styles.css" asp-append-version="true" />
 </head>
@@ -24,77 +30,80 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         @if (Context.Session.GetString("VaiTro") == "Admin")
-                            {
-                            <!-- Menu dành cho Quản trị viên (Admin) -->
+                        {
+                            @* Menu dành cho Quản trị viên (Admin) *@
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="LoaiPhuongTien" asp-action="Index">Quản Lý Loại Xe</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Quản Lý Vị Trí Đỗ</a>
                             </li>
-                            <!-- Module 3 & 4 -->
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Index">Chủ Phương Tiện</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Phiếu Gửi Xe</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="Index">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="ThongKe">Thống Kê</a></li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Index">Quản Lý Chủ Xe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Quản Lý Phương Tiện</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Quản Lý Phiếu Gửi</a>
+                            </li>
+                        }
                         else if (Context.Session.GetString("MaTaiKhoan") != null)
-                            {
-                            <!-- Menu dành cho Khách hàng đã đăng nhập -->
+                        {
+                            @* Menu dành cho Khách hàng đã đăng nhập *@
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Tra Cứu Vị Trí Đỗ</a>
                             </li>
-                            <!-- Module 3 -->
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện Của Tôi</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="DangKyGuiXe" asp-action="DangKy">Đăng Ký Gửi Xe</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="DangKyGuiXe" asp-action="LichSu">Phiếu & Lịch Sử</a></li>
-                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="ThongTinCaNhan">Thông Tin Cá Nhân</a></li>
-                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Xe Của Tôi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Create">Đăng Ký Gửi Xe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Lịch Sử Gửi Xe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Details">Hồ Sơ Của Tôi</a>
+                            </li>
+                        }
                     </ul>
 
-                    <!-- Khối thông tin Tài khoản & Đăng xuất / Đăng nhập -->
+                    @* Khối thông tin Tài khoản & Đăng xuất / Đăng nhập *@
                     <ul class="navbar-nav">
-                            @if (Context.Session.GetString("MaTaiKhoan") != null)
-                            {
+                        @if (Context.Session.GetString("MaTaiKhoan") != null)
+                        {
                             <li class="nav-item d-flex align-items-center me-3 text-white">
                                 <span>Xin chào, <strong class="text-warning">@Context.Session.GetString("HoTen")</strong> (@Context.Session.GetString("VaiTro"))</span>
                             </li>
                             <li class="nav-item">
                                 <a class="btn btn-outline-light btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Logout">Đăng Xuất</a>
                             </li>
-                            }
-                            else
-                            {
+                        }
+                        else
+                        {
                             <li class="nav-item">
                                 <a class="btn btn-light text-primary btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Login">Đăng Nhập</a>
                             </li>
-                            }
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container-fluid px-4">
         <main role="main" class="pb-3">
-            @if (TempData["ThongBao"] is string tbOk)
-            {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">@tbOk<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-            }
-            @if (TempData["Loi"] is string tbLoi)
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">@tbLoi<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-            }
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Hệ Thống Quản Lý Bãi Đỗ Xe - UNETI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted mt-auto py-3 bg-light">
+        <div class="container text-center">
+            &copy; 2026 - Hệ Thống Quản Lý Bãi Đỗ Xe UNETI - Sinh viên thực hiện: <strong>Hà Phúc Hưng (23203100001)</strong>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
