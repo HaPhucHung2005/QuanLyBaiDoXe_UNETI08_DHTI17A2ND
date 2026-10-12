@@ -110,18 +110,11 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     NhanHieu = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MauSac = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
                     MoTa = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrangThai = table.Column<bool>(type: "bit", nullable: false),
-                    ChuPhuongTienMaChuPhuongTien = table.Column<int>(type: "int", nullable: true),
-                    PhuongTienMaPhuongTien = table.Column<int>(type: "int", nullable: true)
+                    TrangThai = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PhuongTien", x => x.MaPhuongTien);
-                    table.ForeignKey(
-                        name: "FK_PhuongTien_ChuPhuongTien_ChuPhuongTienMaChuPhuongTien",
-                        column: x => x.ChuPhuongTienMaChuPhuongTien,
-                        principalTable: "ChuPhuongTien",
-                        principalColumn: "MaChuPhuongTien");
                     table.ForeignKey(
                         name: "FK_PhuongTien_ChuPhuongTien_MaChuPhuongTien",
                         column: x => x.MaChuPhuongTien,
@@ -134,11 +127,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         principalTable: "LoaiPhuongTien",
                         principalColumn: "MaLoaiPhuongTien",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PhuongTien_PhuongTien_PhuongTienMaPhuongTien",
-                        column: x => x.PhuongTienMaPhuongTien,
-                        principalTable: "PhuongTien",
-                        principalColumn: "MaPhuongTien");
                 });
 
             migrationBuilder.CreateTable(
@@ -156,8 +144,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     ThoiGianRaThucTe = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DonGiaTheoGio = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ThanhTien = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TrangThai = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    PhuongTienMaPhuongTien = table.Column<int>(type: "int", nullable: true)
+                    TrangThai = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -168,11 +155,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         principalTable: "PhuongTien",
                         principalColumn: "MaPhuongTien",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PhieuGuiXe_PhuongTien_PhuongTienMaPhuongTien",
-                        column: x => x.PhuongTienMaPhuongTien,
-                        principalTable: "PhuongTien",
-                        principalColumn: "MaPhuongTien");
                     table.ForeignKey(
                         name: "FK_PhieuGuiXe_ViTriDoXe_MaViTri",
                         column: x => x.MaViTri,
@@ -266,64 +248,64 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 
             migrationBuilder.InsertData(
                 table: "PhuongTien",
-                columns: new[] { "MaPhuongTien", "BienSoXe", "ChuPhuongTienMaChuPhuongTien", "MaChuPhuongTien", "MaLoaiPhuongTien", "MauSac", "MoTa", "NhanHieu", "PhuongTienMaPhuongTien", "TrangThai" },
+                columns: new[] { "MaPhuongTien", "BienSoXe", "MaChuPhuongTien", "MaLoaiPhuongTien", "MauSac", "MoTa", "NhanHieu", "TrangThai" },
                 values: new object[,]
                 {
-                    { 1, "29B1-12345", null, 1, 1, "Đỏ", null, "Honda Wave", null, true },
-                    { 2, "30F2-23456", null, 2, 1, "Xanh", null, "Yamaha Exciter", null, true },
-                    { 3, "29C1-34567", null, 3, 1, "Trắng", null, "Honda Vision", null, true },
-                    { 4, "18H1-45678", null, 4, 1, "Đen", null, "Honda Lead", null, true },
-                    { 5, "29D1-56789", null, 5, 1, "Xám", null, "Suzuki Raider", null, true },
-                    { 6, "30E1-67890", null, 6, 1, "Đen", null, "Honda SH", null, true },
-                    { 7, "29K1-78901", null, 7, 1, "Vàng", null, "Yamaha Janus", null, true },
-                    { 8, "90B1-89012", null, 8, 1, "Bạc", null, "Honda Future", null, false },
-                    { 9, "30A-11111", null, 9, 2, "Trắng", null, "Toyota Vios", null, true },
-                    { 10, "29A-22222", null, 10, 2, "Bạc", null, "Hyundai Accent", null, true },
-                    { 11, "30G-33333", null, 11, 2, "Đỏ", null, "Kia Morning", null, true },
-                    { 12, "29H-44444", null, 12, 2, "Xanh", null, "Mazda 3", null, true },
-                    { 13, "30K-55555", null, 13, 2, "Đen", null, "Honda City", null, true },
-                    { 14, "29A-66666", null, 14, 2, "Cam", null, "VinFast Fadil", null, true },
-                    { 15, "30E-77777", null, 15, 2, "Trắng", null, "Toyota Altis", null, true },
-                    { 16, "29A-88888", null, 1, 3, "Bạc", null, "Toyota Innova", null, true },
-                    { 17, "30A-99999", null, 2, 3, "Trắng", null, "Mitsubishi Xpander", null, true },
-                    { 18, "29C-10101", null, 3, 3, "Đen", null, "Kia Carnival", null, true },
-                    { 19, "30H-20202", null, 4, 3, "Xám", null, "Hyundai Santa Fe", null, true },
-                    { 20, "29E-30303", null, 5, 3, "Xanh", null, "VinFast Lux SA", null, true }
+                    { 1, "29B1-12345", 1, 1, "Đỏ", null, "Honda Wave", true },
+                    { 2, "30F2-23456", 2, 1, "Xanh", null, "Yamaha Exciter", true },
+                    { 3, "29C1-34567", 3, 1, "Trắng", null, "Honda Vision", true },
+                    { 4, "18H1-45678", 4, 1, "Đen", null, "Honda Lead", true },
+                    { 5, "29D1-56789", 5, 1, "Xám", null, "Suzuki Raider", true },
+                    { 6, "30E1-67890", 6, 1, "Đen", null, "Honda SH", true },
+                    { 7, "29K1-78901", 7, 1, "Vàng", null, "Yamaha Janus", true },
+                    { 8, "90B1-89012", 8, 1, "Bạc", null, "Honda Future", false },
+                    { 9, "30A-11111", 9, 2, "Trắng", null, "Toyota Vios", true },
+                    { 10, "29A-22222", 10, 2, "Bạc", null, "Hyundai Accent", true },
+                    { 11, "30G-33333", 11, 2, "Đỏ", null, "Kia Morning", true },
+                    { 12, "29H-44444", 12, 2, "Xanh", null, "Mazda 3", true },
+                    { 13, "30K-55555", 13, 2, "Đen", null, "Honda City", true },
+                    { 14, "29A-66666", 14, 2, "Cam", null, "VinFast Fadil", true },
+                    { 15, "30E-77777", 15, 2, "Trắng", null, "Toyota Altis", true },
+                    { 16, "29A-88888", 1, 3, "Bạc", null, "Toyota Innova", true },
+                    { 17, "30A-99999", 2, 3, "Trắng", null, "Mitsubishi Xpander", true },
+                    { 18, "29C-10101", 3, 3, "Đen", null, "Kia Carnival", true },
+                    { 19, "30H-20202", 4, 3, "Xám", null, "Hyundai Santa Fe", true },
+                    { 20, "29E-30303", 5, 3, "Xanh", null, "VinFast Lux SA", true }
                 });
 
             migrationBuilder.InsertData(
                 table: "PhieuGuiXe",
-                columns: new[] { "MaPhieu", "DonGiaTheoGio", "MaPhuongTien", "MaViTri", "NgayDangKy", "PhuongTienMaPhuongTien", "ThanhTien", "ThoiGianDuKienRa", "ThoiGianDuKienVao", "ThoiGianRaThucTe", "ThoiGianVaoThucTe", "TrangThai" },
+                columns: new[] { "MaPhieu", "DonGiaTheoGio", "MaPhuongTien", "MaViTri", "NgayDangKy", "ThanhTien", "ThoiGianDuKienRa", "ThoiGianDuKienVao", "ThoiGianRaThucTe", "ThoiGianVaoThucTe", "TrangThai" },
                 values: new object[,]
                 {
-                    { 1, 5000m, 1, 1, new DateTime(2026, 8, 1, 7, 0, 0, 0, DateTimeKind.Unspecified), null, 20000m, new DateTime(2026, 8, 2, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 11, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 2, 5000m, 2, 3, new DateTime(2026, 8, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), null, 40000m, new DateTime(2026, 8, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 16, 40, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 9, 10, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 3, 20000m, 9, 4, new DateTime(2026, 8, 7, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 80000m, new DateTime(2026, 8, 8, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 11, 20, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 4, 20000m, 10, 14, new DateTime(2026, 8, 11, 13, 0, 0, 0, DateTimeKind.Unspecified), null, 100000m, new DateTime(2026, 8, 12, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 17, 55, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 13, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 5, 30000m, 16, 7, new DateTime(2026, 8, 14, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 60000m, new DateTime(2026, 8, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 6, 5000m, 3, 9, new DateTime(2026, 8, 19, 7, 0, 0, 0, DateTimeKind.Unspecified), null, 25000m, new DateTime(2026, 8, 20, 12, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 7, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 12, 20, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 7, 35, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 7, 20000m, 11, 15, new DateTime(2026, 8, 24, 14, 0, 0, 0, DateTimeKind.Unspecified), null, 120000m, new DateTime(2026, 8, 25, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 19, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 14, 10, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 8, 30000m, 17, 8, new DateTime(2026, 8, 27, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 270000m, new DateTime(2026, 8, 28, 16, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 16, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 9, 5000m, 4, 10, new DateTime(2026, 9, 1, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 20000m, new DateTime(2026, 9, 2, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 11, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 10, 20000m, 12, 4, new DateTime(2026, 9, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), null, 120000m, new DateTime(2026, 9, 5, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 11, 30000m, 18, 17, new DateTime(2026, 9, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 120000m, new DateTime(2026, 9, 9, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 8, 15, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 12, 5000m, 5, 1, new DateTime(2026, 9, 11, 10, 0, 0, 0, DateTimeKind.Unspecified), null, 20000m, new DateTime(2026, 9, 12, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 13, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 10, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 13, 20000m, 13, 5, new DateTime(2026, 9, 14, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 220000m, new DateTime(2026, 9, 15, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 18, 40, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 14, 30000m, 19, 18, new DateTime(2026, 9, 17, 9, 0, 0, 0, DateTimeKind.Unspecified), null, 120000m, new DateTime(2026, 9, 18, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 15, 5000m, 6, 11, new DateTime(2026, 9, 21, 7, 0, 0, 0, DateTimeKind.Unspecified), null, 65000m, new DateTime(2026, 9, 22, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 7, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 19, 10, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 7, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 16, 20000m, 14, 14, new DateTime(2026, 9, 25, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 80000m, new DateTime(2026, 9, 26, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 17, 5000m, 7, 12, new DateTime(2026, 10, 1, 8, 0, 0, 0, DateTimeKind.Unspecified), null, 10000m, new DateTime(2026, 10, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 9, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 18, 30000m, 20, 19, new DateTime(2026, 10, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), null, 120000m, new DateTime(2026, 10, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 16, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
-                    { 19, 5000m, 2, 2, new DateTime(2026, 10, 8, 20, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 9, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 7, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 7, 10, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
-                    { 20, 20000m, 13, 5, new DateTime(2026, 10, 8, 21, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 9, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
-                    { 21, 30000m, 18, 17, new DateTime(2026, 10, 8, 22, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 9, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 6, 30, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 6, 40, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
-                    { 22, 5000m, 4, 10, new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 20, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 20, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
-                    { 23, 30000m, 19, 18, new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 21, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 21, 9, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
-                    { 24, 20000m, 11, 4, new DateTime(2026, 10, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 22, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 22, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
-                    { 25, 5000m, 3, 1, new DateTime(2026, 10, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 20, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 20, 14, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
-                    { 26, 20000m, 9, 15, new DateTime(2026, 10, 7, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 10, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 10, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" },
-                    { 27, 5000m, 1, 3, new DateTime(2026, 10, 7, 9, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 12, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 12, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" },
-                    { 28, 30000m, 16, 8, new DateTime(2026, 10, 7, 10, 0, 0, 0, DateTimeKind.Unspecified), null, null, new DateTime(2026, 10, 13, 16, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 13, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" }
+                    { 1, 5000m, 1, 1, new DateTime(2026, 8, 1, 7, 0, 0, 0, DateTimeKind.Unspecified), 20000m, new DateTime(2026, 8, 2, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 11, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 2, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 2, 5000m, 2, 3, new DateTime(2026, 8, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), 40000m, new DateTime(2026, 8, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 16, 40, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 5, 9, 10, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 3, 20000m, 9, 4, new DateTime(2026, 8, 7, 8, 0, 0, 0, DateTimeKind.Unspecified), 80000m, new DateTime(2026, 8, 8, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 11, 20, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 4, 20000m, 10, 14, new DateTime(2026, 8, 11, 13, 0, 0, 0, DateTimeKind.Unspecified), 100000m, new DateTime(2026, 8, 12, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 17, 55, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 12, 13, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 5, 30000m, 16, 7, new DateTime(2026, 8, 14, 8, 0, 0, 0, DateTimeKind.Unspecified), 60000m, new DateTime(2026, 8, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 6, 5000m, 3, 9, new DateTime(2026, 8, 19, 7, 0, 0, 0, DateTimeKind.Unspecified), 25000m, new DateTime(2026, 8, 20, 12, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 7, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 12, 20, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 20, 7, 35, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 7, 20000m, 11, 15, new DateTime(2026, 8, 24, 14, 0, 0, 0, DateTimeKind.Unspecified), 120000m, new DateTime(2026, 8, 25, 20, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 19, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 25, 14, 10, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 8, 30000m, 17, 8, new DateTime(2026, 8, 27, 8, 0, 0, 0, DateTimeKind.Unspecified), 270000m, new DateTime(2026, 8, 28, 16, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 16, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 8, 28, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 9, 5000m, 4, 10, new DateTime(2026, 9, 1, 8, 0, 0, 0, DateTimeKind.Unspecified), 20000m, new DateTime(2026, 9, 2, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 11, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 10, 20000m, 12, 4, new DateTime(2026, 9, 4, 9, 0, 0, 0, DateTimeKind.Unspecified), 120000m, new DateTime(2026, 9, 5, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 15, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 5, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 11, 30000m, 18, 17, new DateTime(2026, 9, 8, 8, 0, 0, 0, DateTimeKind.Unspecified), 120000m, new DateTime(2026, 9, 9, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 9, 8, 15, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 12, 5000m, 5, 1, new DateTime(2026, 9, 11, 10, 0, 0, 0, DateTimeKind.Unspecified), 20000m, new DateTime(2026, 9, 12, 14, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 13, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 12, 10, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 13, 20000m, 13, 5, new DateTime(2026, 9, 14, 8, 0, 0, 0, DateTimeKind.Unspecified), 220000m, new DateTime(2026, 9, 15, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 18, 40, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 15, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 14, 30000m, 19, 18, new DateTime(2026, 9, 17, 9, 0, 0, 0, DateTimeKind.Unspecified), 120000m, new DateTime(2026, 9, 18, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 9, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 18, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 15, 5000m, 6, 11, new DateTime(2026, 9, 21, 7, 0, 0, 0, DateTimeKind.Unspecified), 65000m, new DateTime(2026, 9, 22, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 7, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 19, 10, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 22, 7, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 16, 20000m, 14, 14, new DateTime(2026, 9, 25, 8, 0, 0, 0, DateTimeKind.Unspecified), 80000m, new DateTime(2026, 9, 26, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 9, 26, 8, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 17, 5000m, 7, 12, new DateTime(2026, 10, 1, 8, 0, 0, 0, DateTimeKind.Unspecified), 10000m, new DateTime(2026, 10, 2, 10, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 8, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 9, 50, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 2, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 18, 30000m, 20, 19, new DateTime(2026, 10, 4, 13, 0, 0, 0, DateTimeKind.Unspecified), 120000m, new DateTime(2026, 10, 5, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 16, 30, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 5, 13, 0, 0, 0, DateTimeKind.Unspecified), "Đã lấy xe" },
+                    { 19, 5000m, 2, 2, new DateTime(2026, 10, 8, 20, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 19, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 7, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 7, 10, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
+                    { 20, 20000m, 13, 5, new DateTime(2026, 10, 8, 21, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 8, 5, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
+                    { 21, 30000m, 18, 17, new DateTime(2026, 10, 8, 22, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 9, 6, 30, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 9, 6, 40, 0, 0, DateTimeKind.Unspecified), "Đang gửi" },
+                    { 22, 5000m, 4, 10, new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 20, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 20, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
+                    { 23, 30000m, 19, 18, new DateTime(2026, 10, 9, 8, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 21, 17, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 21, 9, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
+                    { 24, 20000m, 11, 4, new DateTime(2026, 10, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 22, 11, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 22, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
+                    { 25, 5000m, 3, 1, new DateTime(2026, 10, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 20, 18, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 20, 14, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Chờ xác nhận" },
+                    { 26, 20000m, 9, 15, new DateTime(2026, 10, 7, 8, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 10, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 10, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" },
+                    { 27, 5000m, 1, 3, new DateTime(2026, 10, 7, 9, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 12, 12, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 12, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" },
+                    { 28, 30000m, 16, 8, new DateTime(2026, 10, 7, 10, 0, 0, 0, DateTimeKind.Unspecified), null, new DateTime(2026, 10, 13, 16, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 10, 13, 8, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Đã hủy" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -343,20 +325,10 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                 columns: new[] { "MaViTri", "TrangThai" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PhieuGuiXe_PhuongTienMaPhuongTien",
-                table: "PhieuGuiXe",
-                column: "PhuongTienMaPhuongTien");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PhuongTien_BienSoXe",
                 table: "PhuongTien",
                 column: "BienSoXe",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PhuongTien_ChuPhuongTienMaChuPhuongTien",
-                table: "PhuongTien",
-                column: "ChuPhuongTienMaChuPhuongTien");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhuongTien_MaChuPhuongTien",
@@ -367,11 +339,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                 name: "IX_PhuongTien_MaLoaiPhuongTien",
                 table: "PhuongTien",
                 column: "MaLoaiPhuongTien");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PhuongTien_PhuongTienMaPhuongTien",
-                table: "PhuongTien",
-                column: "PhuongTienMaPhuongTien");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ViTriDoXe_MaLoaiPhuongTien",

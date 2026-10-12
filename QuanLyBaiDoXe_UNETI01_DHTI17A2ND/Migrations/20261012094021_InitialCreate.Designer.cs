@@ -12,7 +12,7 @@ using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261012083754_InitialCreate")]
+    [Migration("20261012094021_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -348,9 +348,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     b.Property<DateTime>("NgayDangKy")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PhuongTienMaPhuongTien")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("ThanhTien")
                         .HasColumnType("decimal(18,2)");
 
@@ -372,8 +369,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("MaPhieu");
-
-                    b.HasIndex("PhuongTienMaPhuongTien");
 
                     b.HasIndex("MaPhuongTien", "TrangThai");
 
@@ -762,9 +757,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("ChuPhuongTienMaChuPhuongTien")
-                        .HasColumnType("int");
-
                     b.Property<int>("MaChuPhuongTien")
                         .HasColumnType("int");
 
@@ -782,9 +774,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("PhuongTienMaPhuongTien")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TrangThai")
                         .HasColumnType("bit");
 
@@ -793,13 +782,9 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                     b.HasIndex("BienSoXe")
                         .IsUnique();
 
-                    b.HasIndex("ChuPhuongTienMaChuPhuongTien");
-
                     b.HasIndex("MaChuPhuongTien");
 
                     b.HasIndex("MaLoaiPhuongTien");
-
-                    b.HasIndex("PhuongTienMaPhuongTien");
 
                     b.ToTable("PhuongTien");
 
@@ -1471,7 +1456,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
             modelBuilder.Entity("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe", b =>
                 {
                     b.HasOne("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien", "PhuongTien")
-                        .WithMany("DanhSachPhieuGuiXe")
+                        .WithMany("PhieuGuiXes")
                         .HasForeignKey("MaPhuongTien")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1482,10 +1467,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien", null)
-                        .WithMany("PhieuGuiXes")
-                        .HasForeignKey("PhuongTienMaPhuongTien");
-
                     b.Navigation("PhuongTien");
 
                     b.Navigation("ViTriDoXe");
@@ -1493,12 +1474,8 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 
             modelBuilder.Entity("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien", b =>
                 {
-                    b.HasOne("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien", null)
-                        .WithMany("PhuongTiens")
-                        .HasForeignKey("ChuPhuongTienMaChuPhuongTien");
-
                     b.HasOne("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien", "ChuPhuongTien")
-                        .WithMany("DanhSachPhuongTien")
+                        .WithMany("PhuongTiens")
                         .HasForeignKey("MaChuPhuongTien")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1508,10 +1485,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
                         .HasForeignKey("MaLoaiPhuongTien")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien", null)
-                        .WithMany("DanhSachPhuongTien")
-                        .HasForeignKey("PhuongTienMaPhuongTien");
 
                     b.Navigation("ChuPhuongTien");
 
@@ -1531,8 +1504,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 
             modelBuilder.Entity("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ChuPhuongTien", b =>
                 {
-                    b.Navigation("DanhSachPhuongTien");
-
                     b.Navigation("PhuongTiens");
                 });
 
@@ -1543,10 +1514,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Migrations
 
             modelBuilder.Entity("QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien", b =>
                 {
-                    b.Navigation("DanhSachPhieuGuiXe");
-
-                    b.Navigation("DanhSachPhuongTien");
-
                     b.Navigation("PhieuGuiXes");
                 });
 #pragma warning restore 612, 618
