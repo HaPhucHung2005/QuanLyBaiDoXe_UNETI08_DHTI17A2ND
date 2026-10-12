@@ -1,66 +1,78 @@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã SV: 23203100001
+    Nội dung thực hiện: Module 1 - Cảnh báo và xác nhận xóa/khóa tài khoản
+*@
+
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.TaiKhoan
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa Tài Khoản";
 }
 
-<h1>Delete</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-danger rounded-3">
+                <div class="card-header bg-danger text-white fw-bold py-3">
+                    <h4 class="mb-0 fs-5"><i class="bi bi-exclamation-triangle-fill me-2"></i>XÁC NHẬN XÓA TÀI KHOẢN</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning border-0 mb-3 small">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        <strong>Cảnh báo:</strong> Bạn có chắc chắn muốn xóa tài khoản này khỏi hệ thống? Hành động này có thể ảnh hưởng đến các dữ liệu liên quan.
+                    </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.TaiKhoan</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenDangNhap)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenDangNhap)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MatKhau)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MatKhau)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HoTen)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HoTen)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.VaiTro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.VaiTro)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TrangThai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TrangThai)
-        </dd>
-    </dl>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="MaTaiKhoan" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                    <dl class="row mb-0 align-items-center">
+                        <dt class="col-sm-4 text-muted">Mã tài khoản:</dt>
+                        <dd class="col-sm-8 fw-bold">#@Model.MaTaiKhoan</dd>
+
+                        <dt class="col-sm-4 text-muted">Tên đăng nhập:</dt>
+                        <dd class="col-sm-8 fw-bold text-danger">@Model.TenDangNhap</dd>
+
+                        <dt class="col-sm-4 text-muted">Họ và tên:</dt>
+                        <dd class="col-sm-8 fw-bold">@Model.HoTen</dd>
+
+                        <dt class="col-sm-4 text-muted">Email:</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4 text-muted">Vai trò:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.VaiTro == "Admin")
+                            {
+                                <span class="badge bg-danger px-2 py-1">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark px-2 py-1">Khách hàng</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4 text-muted">Trạng thái:</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.TrangThai)
+                            {
+                                <span class="badge bg-success px-2 py-1">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary px-2 py-1">Đã bị khóa</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-light p-3 d-flex justify-content-between align-items-center">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-3">
+                        ← Hủy bỏ & Quay lại
+                    </a>
+                    <form asp-action="Delete" method="post" class="m-0">
+                        <input type="hidden" asp-for="MaTaiKhoan" />
+                        <button type="submit" class="btn btn-danger px-4 fw-bold">
+                            🗑️ Xác Nhận Xóa
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

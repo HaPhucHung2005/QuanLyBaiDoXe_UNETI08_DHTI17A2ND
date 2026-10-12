@@ -3,37 +3,75 @@
 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.LoginViewModel
 
-@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+@* Họ và tên: Hà Phúc Hưng
+   Mã SV: 23203100001 
+   Nội dung thực hiện: Module 1 - Quản lý tài khoản, Đăng nhập, Phân quyền
+*@
 
 @{
     ViewData["Title"] = "Đăng Nhập Hệ Thống";
 }
 
 <div class="row justify-content-center mt-5">
-    <div class="col-md-4 card p-4 shadow-sm">
-        <h3 class="text-center mb-4 text-primary">ĐĂNG NHẬP HỆ THỐNG</h3>
+    <div class="col-md-5 col-lg-4">
+        <div class="card p-4 shadow-sm border-0 rounded-3">
+            <h3 class="text-center mb-3 text-primary fw-bold">🔑 ĐĂNG NHẬP</h3>
+            <p class="text-muted text-center small mb-4">Hệ thống quản lý bãi đỗ xe & đăng ký gửi xe</p>
 
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            @* 1. Hiển thị thông báo lỗi từ Controller (như Tài khoản bị khóa, sai pass) *@
+            @if (TempData["Loi"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Loi"]
+                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Error"]
+                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ThongBao"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show p-2 small" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> @TempData["ThongBao"]
+                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
+                </div>
+            }
 
-            <div class="form-group mb-3">
-                <label asp-for="TenDangNhap" class="form-label"></label>
-                <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." />
-                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="TenDangNhap" class="form-label fw-bold small">Tên đăng nhập</label>
+                    <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." />
+                    <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="MatKhau" class="form-label fw-bold small">Mật khẩu</label>
+                    <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu..." />
+                    <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm mb-3">
+                    🚀 Đăng Nhập
+                </button>
+            </form>
+
+            <div class="text-center border-top pt-3">
+                <span class="small text-muted">Chưa có tài khoản?</span>
+                <a asp-controller="TaiKhoan" asp-action="Create" class="small fw-bold text-decoration-none">
+                    Đăng ký Khách hàng mới
+                </a>
             </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="MatKhau" class="form-label"></label>
-                <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu..." />
-                <span asp-validation-for="MatKhau" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2">Đăng Nhập</button>
-        </form>
+        </div>
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
