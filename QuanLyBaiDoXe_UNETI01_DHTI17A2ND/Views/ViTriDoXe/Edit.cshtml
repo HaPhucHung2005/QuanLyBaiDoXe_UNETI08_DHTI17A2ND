@@ -1,71 +1,93 @@
-@* Họ và tên: Hà Phúc Hưng - Mã SV: 23203100001 *@
+@*
+    Họ và tên: Hà Phúc Hưng
+    Mã sinh viên: 23203100001
+    Nội dung thực hiện: Module 2 - Giao diện Chỉnh sửa thông tin Vị trí đỗ xe
+*@
+
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.ViTriDoXe
 
 @{
     ViewData["Title"] = "Chỉnh Sửa Vị Trí Đỗ Xe";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6 card p-4 shadow-sm border-0 rounded-3">
-        <h3 class="text-primary fw-bold text-center mb-3">CHỈNH SỬA VỊ TRÍ ĐỖ XE</h3>
-        <hr />
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-warning text-dark fw-bold py-3">
+                    <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>CHỈNH SỬA VỊ TRÍ ĐỖ XE</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
 
-        <form asp-action="Edit" asp-route-id="@Model.MaViTri" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <!-- Khóa chính ẩn -->
+                        <input type="hidden" asp-for="MaViTri" />
 
-            <!-- Khóa chính ẩn -->
-            <input type="hidden" asp-for="MaViTri" />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TenViTri" class="form-label fw-bold small">Tên vị trí</label>
+                                <input asp-for="TenViTri" class="form-control" placeholder="vd: A01, B02..." />
+                                <span asp-validation-for="TenViTri" class="text-danger small"></span>
+                            </div>
 
-            <div class="mb-3">
-                <label asp-for="TenViTri" class="form-label fw-bold"></label>
-                <input asp-for="TenViTri" class="form-control" placeholder="Nhập tên vị trí (vd: A-01, B-02)..." />
-                <span asp-validation-for="TenViTri" class="text-danger small"></span>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="KhuVuc" class="form-label fw-bold small">Khu vực</label>
+                                <input asp-for="KhuVuc" class="form-control" placeholder="vd: Khu A, Khu B..." />
+                                <span asp-validation-for="KhuVuc" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Tang" class="form-label fw-bold small">Tầng đỗ xe</label>
+                                <input asp-for="Tang" class="form-control" type="number" min="1" max="100" />
+                                <span asp-validation-for="Tang" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaLoaiPhuongTien" class="form-label fw-bold small">Loại xe áp dụng</label>
+                                <select asp-for="MaLoaiPhuongTien" class="form-select" asp-items="ViewBag.MaLoaiPhuongTien">
+                                    <option value="">-- Chọn loại phương tiện --</option>
+                                </select>
+                                <span asp-validation-for="MaLoaiPhuongTien" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TrangThai" class="form-label fw-bold small">Trạng thái vị trí</label>
+                            <select asp-for="TrangThai" class="form-select">
+                                <option value="@TrangThaiViTri.ConTrong">@TrangThaiViTri.ConTrong</option>
+                                <option value="@TrangThaiViTri.DangSuDung">@TrangThaiViTri.DangSuDung</option>
+                                <option value="@TrangThaiViTri.TamNgung">@TrangThaiViTri.TamNgung</option>
+                            </select>
+                            <span asp-validation-for="TrangThai" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MoTa" class="form-label fw-bold small">Mô tả ghi chú</label>
+                            <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả ghi chú vị trí..."></textarea>
+                            <span asp-validation-for="MoTa" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4 fw-semibold">
+                                ← Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4 fw-bold text-dark">
+                                💾 Lưu Thay Đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="KhuVuc" class="form-label fw-bold"></label>
-                <input asp-for="KhuVuc" class="form-control" placeholder="Nhập khu vực (vd: Khu A, Khu B)..." />
-                <span asp-validation-for="KhuVuc" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Tang" class="form-label fw-bold"></label>
-                <input asp-for="Tang" class="form-control" type="number" min="1" />
-                <span asp-validation-for="Tang" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="MaLoaiPhuongTien" class="form-label fw-bold">Loại Xe Khả Dụng</label>
-                <select asp-for="MaLoaiPhuongTien" class="form-select" asp-items="ViewBag.MaLoaiPhuongTien">
-                    <option value="">-- Chọn loại phương tiện --</option>
-                </select>
-                <span asp-validation-for="MaLoaiPhuongTien" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="TrangThai" class="form-label fw-bold"></label>
-                <select asp-for="TrangThai" class="form-select">
-                    <option value="Còn trống">Còn trống</option>
-                    <option value="Đang sử dụng">Đang sử dụng</option>
-                    <option value="Tạm ngừng">Tạm ngừng</option>
-                </select>
-                <span asp-validation-for="TrangThai" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="MoTa" class="form-label fw-bold"></label>
-                <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả ghi chú vị trí..."></textarea>
-                <span asp-validation-for="MoTa" class="text-danger small"></span>
-            </div>
-
-            <div class="d-flex justify-content-between mt-4">
-                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
-                <button type="submit" class="btn btn-warning fw-bold px-4">Lưu Thay Đổi</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
