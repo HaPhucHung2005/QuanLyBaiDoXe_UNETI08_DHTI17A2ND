@@ -42,20 +42,25 @@ public class ChuPhuongTienController : Controller
                                   || (c.Email != null && c.Email.ToLower().Contains(term)));
         }
 
-        // 2. Lọc theo Trạng thái (hoatdong | khoa)
+        // 2. Lọc theo Trạng thái (trangThai là string nhận từ QueryString/URL)
         if (!string.IsNullOrWhiteSpace(trangThai))
         {
-            if (trangThai == "hoatdong")
+            // Chuyển chuỗi tham số về chữ thường để so sánh
+            string val = trangThai.Trim().ToLowerInvariant();
+
+            if (val == "true" || val == "1" || val == "hoatdong")
             {
-                query = query.Where(c => c.TrangThai == TrangThaiTaiKhoan.DangHoatDong);
+                query = query.Where(c => c.TrangThai == true);
             }
-            else if (trangThai == "khoa")
+            else if (val == "false" || val == "0" || val == "khoa" || val == "dakhoa")
             {
-                query = query.Where(c => c.TrangThai == TrangThaiTaiKhoan.DaKhoa);
+                query = query.Where(c => c.TrangThai == false);
             }
         }
 
-        var dsChuPhuongTien = await query.OrderByDescending(c => c.MaChuPhuongTien).ToListAsync();
+        var dsChuPhuongTien = await query
+            .OrderByDescending(c => c.MaChuPhuongTien)
+            .ToListAsync();
 
         var viewModel = new ChuPhuongTienFilterViewModel
         {
