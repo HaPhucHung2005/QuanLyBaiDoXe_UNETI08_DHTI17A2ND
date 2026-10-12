@@ -1,10 +1,10 @@
 @*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
+    Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+    Mã sinh viên: 23203100001 - MSSV
     Nội dung thực hiện: Giao diện Danh sách Phương tiện (Module 3)
 *@
-
-@model IEnumerable<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhuongTien>
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.PhuongTienFilterViewModel
 
 @{
     ViewData["Title"] = "Danh Sách Phương Tiện";
@@ -36,20 +36,34 @@
         </div>
     }
 
-    @* Khung tìm kiếm theo Biển số xe, Nhãn hiệu, Chủ phương tiện *@
+    @* Khung tìm kiếm và bộ lọc nâng cao *@
     <form asp-action="Index" method="get" class="row g-2 mb-3">
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="input-group">
-                <input type="text" name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Nhập biển số xe, nhãn hiệu hoặc tên chủ xe..." />
+                <input type="text" name="searchBienSo" value="@Model.SearchBienSo" class="form-control" placeholder="Nhập biển số xe, nhãn hiệu..." />
                 <button type="submit" class="btn btn-primary fw-bold">
                     <i class="bi bi-search"></i> Tìm kiếm
                 </button>
-                @if (!string.IsNullOrEmpty(ViewBag.Keyword as string))
-                {
-                    <a asp-action="Index" class="btn btn-outline-secondary">Xóa bộ lọc</a>
-                }
             </div>
         </div>
+        <div class="col-md-3">
+            <select name="selectedMaLoai" asp-items="Model.LoaiList" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Tất cả loại xe --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="trangThai" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="hoatdong" selected="@(Model.TrangThai == "hoatdong")">Hoạt động</option>
+                <option value="tamngung" selected="@(Model.TrangThai == "tamngung")">Tạm ngừng</option>
+            </select>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.SearchBienSo) || Model.SelectedMaLoai.HasValue || !string.IsNullOrEmpty(Model.TrangThai))
+        {
+            <div class="col-md-2">
+                <a asp-action="Index" class="btn btn-outline-secondary w-100">Xóa bộ lọc</a>
+            </div>
+        }
     </form>
 
     <div class="card shadow-sm">
@@ -70,9 +84,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
+                        @if (Model.DanhSach != null && Model.DanhSach.Any())
                         {
-                            foreach (var item in Model)
+                            foreach (var item in Model.DanhSach)
                             {
                                 <tr>
                                     <td class="text-center fw-bold">#@item.MaPhuongTien</td>
@@ -89,7 +103,7 @@
                                     <td class="text-center">@(string.IsNullOrEmpty(item.MauSac) ? "-" : item.MauSac)</td>
                                     <td>@(string.IsNullOrEmpty(item.MoTa) ? "-" : item.MoTa)</td>
                                     <td class="text-center">
-                                        @if (item.TrangThai)
+                                        @if (item.TrangThai == TrangThaiHoatDong.HoatDong)
                                         {
                                             <span class="badge bg-success px-2 py-1">Hoạt động</span>
                                         }
@@ -100,10 +114,10 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <a asp-action="Details" asp-route-id="@item.MaPhuongTien" class="btn btn-outline-info" title="Chi tiết">
+                                            <a asp-action="Details" asp-route-id="@item.MaPhuongTien" class="btn btn-outline-info" title="Xem chi tiết">
                                                 Xem
                                             </a>
-                                            <a asp-action="Edit" asp-route-id="@item.MaPhuongTien" class="btn btn-outline-warning" title="Sửa">
+                                            <a asp-action="Edit" asp-route-id="@item.MaPhuongTien" class="btn btn-outline-warning" title="Chỉnh sửa">
                                                 Sửa
                                             </a>
                                             <a asp-action="Delete" asp-route-id="@item.MaPhuongTien" class="btn btn-outline-danger" title="Xóa">

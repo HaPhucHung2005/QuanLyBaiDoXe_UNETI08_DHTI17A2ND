@@ -1,0 +1,101 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* 
+    Họ và tên: Trần Ngọc Minh - Hà Phúc Hưng
+    Mã SV: [điền MSSV] - 23203100001 
+    Module 4 
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.ThongKeViewModel
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels
+
+@{
+    ViewData["Title"] = "Thống kê LINQ";
+}
+
+<div class="container-fluid mt-3">
+    <!-- Tiêu đề & Nút quay lại Dashboard -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="text-primary fw-bold mb-0">📈 THỐNG KÊ CHI TIẾT (LINQ)</h2>
+            <small class="text-muted">Quy ước: "Lượt gửi" tính các phiếu đã có xe thực tế vào bãi (Đang gửi + Đã lấy xe).</small>
+        </div>
+        <div>
+            <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-secondary me-2">📋 Quản lý phiếu</a>
+            <a asp-action="Index" class="btn btn-outline-primary fw-bold">← Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Các khối thống kê dạng biểu đồ thanh (Thông qua Partial View _Bang) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Số phương tiện theo loại", Model.PhuongTienTheoLoai))" />
+        </div>
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Số vị trí theo trạng thái", Model.ViTriTheoTrangThai))" />
+        </div>
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Số phiếu theo trạng thái", Model.PhieuTheoTrangThai))" />
+        </div>
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Lượt gửi theo loại phương tiện", Model.LuotGuiTheoLoai))" />
+        </div>
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Lượt gửi theo tháng", Model.LuotGuiTheoThang))" />
+        </div>
+        <div class="col-md-4">
+            <partial name="_Bang" model="@(new ThongKeBang("Vị trí được sử dụng nhiều nhất", Model.ViTriNhieuNhat))" />
+        </div>
+        <div class="col-md-6">
+            <partial name="_Bang" model="@(new ThongKeBang("Lượt gửi theo vị trí đỗ", Model.LuotGuiTheoViTri))" />
+        </div>
+        <div class="col-md-6">
+            <partial name="_Bang" model="@(new ThongKeBang("Lượt gửi theo chủ phương tiện", Model.LuotGuiTheoChu))" />
+        </div>
+    </div>
+
+    <!-- Bảng thống kê Doanh thu theo tháng -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold bg-success text-white d-flex justify-content-between align-items-center">
+            <span>💵 DOANH THU THEO THÁNG (Tính theo các phiếu Đã lấy xe)</span>
+            <span class="badge bg-light text-dark">Tổng: @Model.TongDoanhThu.ToString("N0") VNĐ</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-striped align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th>Tháng / Năm</th>
+                            <th class="text-end" style="width: 200px;">Số lượt hoàn tất</th>
+                            <th class="text-end" style="width: 250px;">Doanh thu thực tế (VNĐ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.DoanhThuTheoThang != null && Model.DoanhThuTheoThang.Any())
+                        {
+                            foreach (var d in Model.DoanhThuTheoThang)
+                            {
+                                <tr>
+                                    <td class="text-center fw-bold">@d.Thang</td>
+                                    <td class="text-end">@d.SoPhieu lượt</td>
+                                    <td class="text-end fw-bold text-success">@d.DoanhThu.ToString("N0") đ</td>
+                                </tr>
+                            }
+                            <tr class="fw-bold table-success text-dark">
+                                <td colspan="2" class="text-uppercase">Tổng doanh thu toàn bộ:</td>
+                                <td class="text-end text-danger fs-6">@Model.TongDoanhThu.ToString("N0") đ</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">Chưa có dữ liệu doanh thu từ các phiếu đã hoàn tất.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

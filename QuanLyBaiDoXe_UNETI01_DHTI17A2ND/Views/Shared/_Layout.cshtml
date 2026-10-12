@@ -31,7 +31,7 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (Context.Session.GetString("VaiTro") == "Admin")
                         {
-                            @* Menu dành cho Quản trị viên (Admin) *@
+                            <!-- Menu dành cho Quản trị viên (Admin) --> 
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="LoaiPhuongTien" asp-action="Index">Quản Lý Loại Xe</a>
                             </li>
@@ -47,15 +47,21 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Quản Lý Phiếu Gửi</a>
                             </li>
+                            <!-- Module 3 & 4 -->
+                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Index">Chủ Phương Tiện</a></li>
+                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện</a></li>
+                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Phiếu Gửi Xe</a></li>
+                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="Index">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="ThongKe">Thống Kê</a></li>
                         }
                         else if (Context.Session.GetString("MaTaiKhoan") != null)
                         {
-                            @* Menu dành cho Khách hàng đã đăng nhập *@
+                            <!-- Menu dành cho Khách hàng đã đăng nhập -->
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Tra Cứu Vị Trí Đỗ</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Xe Của Tôi</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện Của Tôi</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Create">Đăng Ký Gửi Xe</a>
@@ -66,6 +72,7 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Details">Hồ Sơ Của Tôi</a>
                             </li>
+                            
                         }
                     </ul>
 

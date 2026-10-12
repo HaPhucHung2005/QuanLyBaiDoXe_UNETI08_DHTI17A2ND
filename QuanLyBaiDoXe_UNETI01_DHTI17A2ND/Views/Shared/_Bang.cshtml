@@ -1,0 +1,60 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* 
+    Họ và tên: Trần Ngọc Minh - Hà Phúc Hưng
+    Mã SV: [điền MSSV] - 23203100001 
+    Module 4 
+*@
+
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.ThongKeBang
+
+@{
+    // Tính giá trị Max để quy đổi ra tỷ lệ % cho Progress Bar
+    int max = Model.Du.Any() ? Model.Du.Max(x => x.SoLuong) : 1;
+    if (max <= 0) { max = 1; }
+}
+
+<div class="card shadow-sm h-100">
+    <div class="card-header fw-bold bg-primary text-white py-2">
+        <i class="bi bi-bar-chart-line-fill me-1"></i> @Model.TieuDe
+    </div>
+    <div class="card-body p-2">
+        @if (!Model.Du.Any())
+        {
+            <div class="text-muted text-center py-3">
+                <i class="bi bi-inbox fs-4 d-block mb-1"></i> Chưa có dữ liệu
+            </div>
+        }
+        else
+        {
+            <table class="table table-sm table-borderless align-middle mb-0">
+                <tbody>
+                    @foreach (var x in Model.Du)
+                    {
+                        int phanTram = (int)Math.Round((double)x.SoLuong * 100 / max);
+                        <tr>
+                            <td style="width: 40%;" class="text-truncate" title="@x.Nhan">
+                                <small class="fw-semibold text-secondary">@x.Nhan</small>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 14px;" title="@phanTram%">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                                         role="progressbar" 
+                                         style="width: @phanTram%" 
+                                         aria-valuenow="@x.SoLuong" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="@max">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end fw-bold text-dark" style="width: 50px;">
+                                @x.SoLuong
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

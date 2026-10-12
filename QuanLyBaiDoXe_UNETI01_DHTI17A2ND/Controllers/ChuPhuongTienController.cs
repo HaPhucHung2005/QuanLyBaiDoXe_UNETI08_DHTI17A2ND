@@ -1,5 +1,5 @@
 // =================================================================
-// Họ và tên: Hà Phúc Hưng
+// Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
 // Mã sinh viên: 23203100001
 // Nội dung thực hiện: Controller Quản lý Chủ phương tiện (Module 3)
 // =================================================================
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
+using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels;
 
 public class ChuPhuongTienController : Controller
 {
@@ -20,26 +21,54 @@ public class ChuPhuongTienController : Controller
     }
 
     // GET: CHUPHUONGTIENS (Admin xem danh sách & Tìm kiếm)
-    public async Task<IActionResult> Index(string? keyword)    
+    public async Task<IActionResult> Index(string? keyword, string? trangThai, int pageIndex = 1)    
     {
         var vaiTro = HttpContext.Session.GetString("VaiTro");
         if (vaiTro != "Admin")
         {
             return RedirectToAction("Index", "Home");
         }
+
         var query = _context.ChuPhuongTien
             .Include(c => c.TaiKhoan)
             .AsQueryable();
+
+        // 1. Lọc theo từ khóa tìm kiếm (Họ tên, SĐT, Email)
         if (!string.IsNullOrWhiteSpace(keyword))
         {
             var term = keyword.Trim().ToLower();
             query = query.Where(c => c.HoTen.ToLower().Contains(term)
-            || c.SoDienThoai.Contains(term)
-            || c.Email.ToLower().Contains(term));
+                                  || c.SoDienThoai.Contains(term)
+                                  || (c.Email != null && c.Email.ToLower().Contains(term)));
         }
 
+        // 2. Lọc theo Trạng thái (hoatdong | khoa)
+        if (!string.IsNullOrWhiteSpace(trangThai))
+        {
+            if (trangThai == "hoatdong")
+            {
+                query = query.Where(c => c.TrangThai == TrangThaiTaiKhoan.DangHoatDong);
+            }
+            else if (trangThai == "khoa")
+            {
+                query = query.Where(c => c.TrangThai == TrangThaiTaiKhoan.DaKhoa);
+            }
+        }
+
+        var dsChuPhuongTien = await query.OrderByDescending(c => c.MaChuPhuongTien).ToListAsync();
+
+        var viewModel = new ChuPhuongTienFilterViewModel
+        {
+            DanhSach = dsChuPhuongTien,
+            Search = keyword,
+            TrangThai = trangThai,
+            PageIndex = pageIndex,
+            TotalPages = 1
+        };
+
         ViewBag.Keyword = keyword;
-        return View(await query.OrderByDescending(c=>c.MaChuPhuongTien).ToListAsync());
+        ViewBag.TrangThai = trangThai;
+        return View(viewModel);
     }
 
     // GET: CHUPHUONGTIENS/Details/5
@@ -52,18 +81,21 @@ public class ChuPhuongTienController : Controller
         {
             return RedirectToAction("Login", "TaiKhoan");
         }
+
         ChuPhuongTien? chuPhuongTien;
 
         if (vaiTroSession == "Admin" && id.HasValue)
         {
             chuPhuongTien = await _context.ChuPhuongTien
                 .Include(c => c.TaiKhoan)
+                .Include(c => c.PhuongTiens)
                 .FirstOrDefaultAsync(m => m.MaChuPhuongTien == id.Value);
         }
         else
         {
             chuPhuongTien = await _context.ChuPhuongTien
                 .Include(c => c.TaiKhoan)
+                .Include(c => c.PhuongTiens)
                 .FirstOrDefaultAsync(m => m.MaTaiKhoan == maTaiKhoanSession.Value);
         }
 
@@ -84,8 +116,12 @@ public class ChuPhuongTienController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
-            , "MaTaiKhoan", "TenDangNhap");
+        ViewData["MaTaiKhoan"] = new SelectList(
+            _context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng"),
+            "MaTaiKhoan",
+            "TenDangNhap"
+        );
+
         return View();
     }
 
@@ -96,17 +132,40 @@ public class ChuPhuongTienController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("MaChuPhuongTien,MaTaiKhoan,HoTen,NgaySinh,GioiTinh,SoDienThoai,Email,DiaChi,NgayDangKy,TrangThai,TaiKhoan,PhuongTiens")] ChuPhuongTien chuphuongtien)
     {
-        // Loại bỏ kiểm tra ModelState cho thuộc tính Navigation
+        var vaiTro = HttpContext.Session.GetString("VaiTro");
+        if (vaiTro != "Admin")
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
+        // Loại bỏ Validation cho Navigation properties
         ModelState.Remove("TaiKhoan");
         ModelState.Remove("PhuongTiens");
+
+        // Kiểm tra trùng Số điện thoại
+        bool phoneExists = await _context.ChuPhuongTien.AnyAsync(c => c.SoDienThoai == chuphuongtien.SoDienThoai);
+        if (phoneExists)
+        {
+            ModelState.AddModelError("SoDienThoai", "Số điện thoại này đã được đăng ký bởi chủ phương tiện khác.");
+        }
 
         if (ModelState.IsValid)
         {
             chuphuongtien.NgayDangKy = DateTime.Now;
             _context.Add(chuphuongtien);
             await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Thêm mới chủ phương tiện thành công!";
             return RedirectToAction(nameof(Index));
         }
+
+        ViewData["MaTaiKhoan"] = new SelectList(
+            _context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng"),
+            "MaTaiKhoan",
+            "TenDangNhap",
+            chuphuongtien.MaTaiKhoan
+        );
+
         return View(chuphuongtien);
     }
 
@@ -138,8 +197,13 @@ public class ChuPhuongTienController : Controller
             return NotFound();
         }
 
-        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
-            , "MaTaiKhoan", "TenDangNhap", chuphuongtien.MaTaiKhoan);
+        ViewData["MaTaiKhoan"] = new SelectList(
+            _context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng"),
+            "MaTaiKhoan",
+            "TenDangNhap",
+            chuphuongtien.MaTaiKhoan
+        );
+
         return View(chuphuongtien);
     }
 
@@ -158,12 +222,22 @@ public class ChuPhuongTienController : Controller
         ModelState.Remove("TaiKhoan");
         ModelState.Remove("PhuongTiens");
 
+        // Kiểm tra trùng SĐT với chủ phương tiện khác
+        bool phoneExists = await _context.ChuPhuongTien
+            .AnyAsync(c => c.SoDienThoai == chuphuongtien.SoDienThoai && c.MaChuPhuongTien != id);
+
+        if (phoneExists)
+        {
+            ModelState.AddModelError("SoDienThoai", "Số điện thoại này đã được sử dụng bởi chủ phương tiện khác.");
+        }
+
         if (ModelState.IsValid)
         {
             try
             {
                 _context.Update(chuphuongtien);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Cập nhật thông tin chủ phương tiện thành công!";
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -176,11 +250,22 @@ public class ChuPhuongTienController : Controller
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Index));
+
+            var vaiTroSession = HttpContext.Session.GetString("VaiTro");
+            if (vaiTroSession == "Admin")
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Details));
         }
 
-        ViewData["MaTaiKhoan"] = new SelectList(_context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng")
-            , "MaTaiKhoan", "TenDangNhap", chuphuongtien.MaTaiKhoan);
+        ViewData["MaTaiKhoan"] = new SelectList(
+            _context.TaiKhoan.Where(t => t.VaiTro == "Khách hàng"),
+            "MaTaiKhoan",
+            "TenDangNhap",
+            chuphuongtien.MaTaiKhoan
+        );
+
         return View(chuphuongtien);
     }
 
@@ -200,6 +285,7 @@ public class ChuPhuongTienController : Controller
 
         var chuphuongtien = await _context.ChuPhuongTien
             .Include(c => c.TaiKhoan)
+            .Include(c => c.PhuongTiens)
             .FirstOrDefaultAsync(m => m.MaChuPhuongTien == id.Value);
 
         if (chuphuongtien == null)
@@ -221,11 +307,22 @@ public class ChuPhuongTienController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        var chuphuongtien = await _context.ChuPhuongTien.FindAsync(id);
+        var chuphuongtien = await _context.ChuPhuongTien
+            .Include(c => c.PhuongTiens)
+            .FirstOrDefaultAsync(c => c.MaChuPhuongTien == id);
+
         if (chuphuongtien != null)
         {
+            // Kiểm tra ràng buộc: Không cho xóa nếu chủ phương tiện đang có xe trong CSDL
+            if (chuphuongtien.PhuongTiens != null && chuphuongtien.PhuongTiens.Any())
+            {
+                TempData["Error"] = "Không thể xóa chủ phương tiện này vì họ đang sở hữu phương tiện trong hệ thống!";
+                return RedirectToAction(nameof(Index));
+            }
+
             _context.ChuPhuongTien.Remove(chuphuongtien);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa chủ phương tiện thành công!";
         }
 
         return RedirectToAction(nameof(Index));

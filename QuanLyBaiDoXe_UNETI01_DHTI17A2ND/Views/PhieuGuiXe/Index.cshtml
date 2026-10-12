@@ -1,61 +1,85 @@
 @*
-    Họ và tên: Hà Phúc Hưng
-    Mã sinh viên: 23203100001
-    Nội dung thực hiện: Giao diện Danh sách và Lịch sử Phiếu gửi xe (Module 3)
+    Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+    Mã sinh viên: 23203100001 - MSSV
+    Nội dung thực hiện: Giao diện Danh sách và Lịch sử Phiếu gửi xe (Module 3 & Module 4)
 *@
 
-@model IEnumerable<QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models.PhieuGuiXe>
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.PhieuGuiXeFilterViewModel
 
 @{
     ViewData["Title"] = "Danh Sách Phiếu Gửi Xe";
-    var currentTrangThai = ViewBag.CurrentTrangThai as string;
+    bool isAdmin = Context.Session.GetString("VaiTro") == "Admin";
 }
 
 <div class="container-fluid mt-4">
+    <!-- Header Page -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-primary fw-bold">
-            <i class="bi bi-receipt"></i> Lịch Sử & Danh Sách Phiếu Gửi Xe
+        <h2 class="text-primary fw-bold mb-0">
+            <i class="bi bi-receipt"></i> QUẢN LÝ & LỊCH SỬ PHIẾU GỬI XE
         </h2>
-        <a asp-action="Create" class="btn btn-success fw-bold">
-            <i class="bi bi-plus-circle"></i> Đăng Ký Gửi Xe Mới
-        </a>
+        <div>
+            @if (isAdmin)
+            {
+                <a asp-controller="ThongKe" asp-action="Index" class="btn btn-outline-primary me-2">📊 Dashboard</a>
+                <a asp-controller="ThongKe" asp-action="ThongKe" class="btn btn-outline-success me-2">📈 Thống kê LINQ</a>
+            }
+            <a asp-action="Create" class="btn btn-success fw-bold">
+                <i class="bi bi-plus-circle"></i> Đăng Ký Gửi Xe Mới
+            </a>
+        </div>
     </div>
 
     @* Thông báo thành công / lỗi từ TempData *@
-    @if (TempData["Success"] != null)
+    @if (TempData["ThongBao"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
+            <i class="bi bi-check-circle-fill me-1"></i> @TempData["ThongBao"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-    @if (TempData["Error"] != null)
+    @if (TempData["Loi"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
+            <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Loi"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    @* Bộ lọc trạng thái phiếu gửi xe (Mục 7.6) *@
-    <div class="btn-group mb-3" role="group">
-        <a asp-action="Index" class="btn btn-outline-primary @(string.IsNullOrEmpty(currentTrangThai) ? "active" : "")">
-            Tất cả
-        </a>
-        <a asp-action="Index" asp-route-trangThai="Chờ xác nhận" class="btn btn-outline-warning @(currentTrangThai == "Chờ xác nhận" ? "active" : "")">
-            Chờ xác nhận
-        </a>
-        <a asp-action="Index" asp-route-trangThai="Đang gửi" class="btn btn-outline-info @(currentTrangThai == "Đang gửi" ? "active" : "")">
-            Đang gửi
-        </a>
-        <a asp-action="Index" asp-route-trangThai="Đã lấy xe" class="btn btn-outline-success @(currentTrangThai == "Đã lấy xe" ? "active" : "")">
-            Đã lấy xe
-        </a>
-        <a asp-action="Index" asp-route-trangThai="Đã hủy" class="btn btn-outline-secondary @(currentTrangThai == "Đã hủy" ? "active" : "")">
-            Đã hủy
-        </a>
-    </div>
+    <!-- Form lọc nâng cao (Module 4) -->
+    <form asp-action="Index" method="get" class="card card-body shadow-sm mb-3 bg-light">
+        <div class="row g-2">
+            <div class="col-md-2">
+                <input type="text" name="SearchBienSo" value="@Model.SearchBienSo" class="form-control form-control-sm" placeholder="Biển số xe..." />
+            </div>
+            @if (isAdmin)
+            {
+                <div class="col-md-2">
+                    <input type="text" name="SearchChuXe" value="@Model.SearchChuXe" class="form-control form-control-sm" placeholder="Tên chủ xe..." />
+                </div>
+            }
+            <div class="col-md-2">
+                <select name="SelectedMaLoai" asp-items="Model.LoaiList" class="form-select form-select-sm">
+                    <option value="">-- Tất cả loại xe --</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="SelectedTrangThai" asp-items="Model.TrangThaiList" class="form-select form-select-sm">
+                    <option value="">-- Tất cả trạng thái --</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="TuNgay" value="@(Model.TuNgay?.ToString("yyyy-MM-dd"))" class="form-control form-control-sm" title="Từ ngày đăng ký" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">
+                    <i class="bi bi-search"></i> Lọc dữ liệu
+                </button>
+            </div>
+        </div>
+    </form>
 
+    <!-- Bảng danh sách phiếu gửi xe -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -64,52 +88,61 @@
                         <tr>
                             <th>Mã phiếu</th>
                             <th>Biển số xe</th>
+                            @if (isAdmin)
+                            {
+                                <th>Chủ phương tiện</th>
+                            }
                             <th>Vị trí đỗ</th>
                             <th>Ngày đăng ký</th>
-                            <th>Dự kiến vào</th>
-                            <th>Dự kiến ra</th>
-                            <th>Đơn giá/giờ</th>
+                            <th>Thực tế Vào/Ra</th>
+                            <th>Đơn giá/h</th>
                             <th>Thành tiền</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model != null && Model.Any())
+                        @if (Model.DanhSach != null && Model.DanhSach.Any())
                         {
-                            foreach (var item in Model)
+                            foreach (var item in Model.DanhSach)
                             {
                                 <tr>
                                     <td class="text-center fw-bold">#@item.MaPhieu</td>
                                     <td class="text-center text-primary fw-bold">
                                         @(item.PhuongTien?.BienSoXe ?? item.MaPhuongTien.ToString())
                                     </td>
+                                    @if (isAdmin)
+                                    {
+                                        <td>@(item.PhuongTien?.ChuPhuongTien?.HoTen ?? "-")</td>
+                                    }
                                     <td class="text-center">
-                                        <span class="fw-bold">@(item.ViTriDoXe?.TenViTri ?? item.MaViTri.ToString())</span>
+                                        <span class="fw-bold text-success">@(item.ViTriDoXe?.TenViTri ?? item.MaViTri.ToString())</span>
                                         @if (item.ViTriDoXe != null)
                                         {
                                             <br /><small class="text-muted">(@item.ViTriDoXe.KhuVuc - Tầng @item.ViTriDoXe.Tang)</small>
                                         }
                                     </td>
-                                    <td class="text-center">@item.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td class="text-center">@item.ThoiGianDuKienVao.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td class="text-center">@item.ThoiGianDuKienRa.ToString("dd/MM/yyyy HH:mm")</td>
-                                    <td class="text-end text-danger fw-bold">@item.DonGiaTheoGio.ToString("N0") VNĐ</td>
+                                    <td class="text-center small">@item.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-center small">
+                                        Vào: @(item.ThoiGianVaoThucTe.HasValue ? item.ThoiGianVaoThucTe.Value.ToString("dd/MM HH:mm") : "-")<br />
+                                        Ra: @(item.ThoiGianRaThucTe.HasValue ? item.ThoiGianRaThucTe.Value.ToString("dd/MM HH:mm") : "-")
+                                    </td>
+                                    <td class="text-end text-danger fw-bold">@item.DonGiaTheoGio.ToString("N0") đ</td>
                                     <td class="text-end text-danger fw-bold">
                                         @(item.ThanhTien.HasValue ? item.ThanhTien.Value.ToString("N0") + " VNĐ" : "-")
                                     </td>
                                     <td class="text-center">
-                                        @if (item.TrangThai == "Chờ xác nhận")
+                                        @if (item.TrangThai == TrangThaiPhieu.ChoXacNhan)
                                         {
-                                            <span class="badge bg-warning text-dark px-2 py-1">Chờ xác nhận</span>
+                                            <span class="badge bg-warning text-dark px-2 py-1">@TrangThaiPhieu.ChoXacNhan</span>
                                         }
-                                        else if (item.TrangThai == "Đang gửi")
+                                        else if (item.TrangThai == TrangThaiPhieu.DangGui)
                                         {
-                                            <span class="badge bg-info text-white px-2 py-1">Đang gửi</span>
+                                            <span class="badge bg-info text-white px-2 py-1">@TrangThaiPhieu.DangGui</span>
                                         }
-                                        else if (item.TrangThai == "Đã lấy xe")
+                                        else if (item.TrangThai == TrangThaiPhieu.DaLayXe)
                                         {
-                                            <span class="badge bg-success px-2 py-1">Đã lấy xe</span>
+                                            <span class="badge bg-success px-2 py-1">@TrangThaiPhieu.DaLayXe</span>
                                         }
                                         else
                                         {
@@ -118,17 +151,38 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <a asp-action="Details" asp-route-id="@item.MaPhieu" class="btn btn-outline-info" title="Chi tiết">
+                                            <a asp-action="Details" asp-route-id="@item.MaPhieu" class="btn btn-outline-info" title="Xem chi tiết">
                                                 Xem
                                             </a>
-                                            <a asp-action="Edit" asp-route-id="@item.MaPhieu" class="btn btn-outline-warning" title="Chỉnh sửa">
-                                                Sửa
-                                            </a>
-                                            @if (item.TrangThai == "Chờ xác nhận")
+                                            
+                                            @* Các nút chức năng Admin (Module 4) *@
+                                            @if (isAdmin)
                                             {
-                                                <a asp-action="Delete" asp-route-id="@item.MaPhieu" class="btn btn-outline-danger" title="Hủy phiếu">
-                                                    Hủy
+                                                @if (item.TrangThai == TrangThaiPhieu.ChoXacNhan)
+                                                {
+                                                    <form asp-action="XacNhanVao" asp-route-id="@item.MaPhieu" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-success" title="Xác nhận xe vào bãi">Vào</button>
+                                                    </form>
+                                                }
+                                                else if (item.TrangThai == TrangThaiPhieu.DangGui)
+                                                {
+                                                    <form asp-action="XacNhanRa" asp-route-id="@item.MaPhieu" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-warning fw-bold text-dark" title="Xác nhận xe ra bãi & tính phí">Ra</button>
+                                                    </form>
+                                                }
+                                                <a asp-action="Edit" asp-route-id="@item.MaPhieu" class="btn btn-outline-warning" title="Chỉnh sửa">
+                                                    Sửa
                                                 </a>
+                                            }
+
+                                            @* Nút Hủy phiếu cho Khách hàng & Admin khi phiếu còn ở trạng thái Chờ xác nhận *@
+                                            @if (item.TrangThai == TrangThaiPhieu.ChoXacNhan)
+                                            {
+                                                <form asp-action="Delete" asp-route-id="@item.MaPhieu" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc muốn hủy phiếu gửi xe này?')" title="Hủy phiếu">
+                                                        Hủy
+                                                    </button>
+                                                </form>
                                             }
                                         </div>
                                     </td>
@@ -138,8 +192,8 @@
                         else
                         {
                             <tr>
-                                <td colspan="10" class="text-center text-muted py-4">
-                                    Chưa có phiếu gửi xe nào trong danh sách.
+                                <td colspan="@(isAdmin ? 10 : 9)" class="text-center text-muted py-4">
+                                    Không tìm thấy phiếu gửi xe nào phù hợp.
                                 </td>
                             </tr>
                         }

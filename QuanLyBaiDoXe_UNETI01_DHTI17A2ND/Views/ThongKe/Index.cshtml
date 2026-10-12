@@ -1,0 +1,65 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* 
+   Họ và tên: Trần Ngọc Minh - Hà Phúc Hưng 
+   Mã SV: [điền MSSV] - 23203100001 
+   Module 4 
+*@
+
+@using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
+@model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    
+    // Mảng cấu hình các thẻ Dashboard với Tiêu đề, Số liệu, Màu sắc và Icon Bootstrap
+    var theDashboard = new (string Nhan, int So, string Mau, string Icon)[] {
+        ("Loại phương tiện", Model.TongLoaiPhuongTien, "primary", "bi-tags-fill"),
+        ("Vị trí đỗ xe", Model.TongViTri, "primary", "bi-p-square-fill"),
+        ("Chủ phương tiện", Model.TongChuPhuongTien, "primary", "bi-people-fill"),
+        ("Phương tiện đăng ký", Model.TongPhuongTien, "primary", "bi-car-front-fill"),
+        ("Tổng phiếu gửi xe", Model.TongPhieu, "dark", "bi-receipt-cutoff"),
+        ("Phiếu chờ xác nhận", Model.PhieuChoXacNhan, "warning", "bi-clock-history"),
+        ("Xe đang gửi trong bãi", Model.XeDangGui, "info", "bi-box-arrow-in-right"),
+        ("Vị trí đỗ còn trống", Model.ViTriConTrong, "success", "bi-check-circle-fill"),
+        ("Vị trí đỗ đang sử dụng", Model.ViTriDangSuDung, "danger", "bi-dash-circle-fill") 
+    };
+}
+
+<div class="container-fluid mt-3">
+    <!-- Tiêu đề & Điều hướng nhanh -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary fw-bold mb-0">📊 DASHBOARD TỔNG QUAN</h2>
+            <small class="text-muted">Thống kê nhanh toàn bộ hoạt động của hệ thống quản lý bãi đỗ xe</small>
+        </div>
+        <div>
+            <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-secondary me-2">
+                📋 Quản lý phiếu
+            </a>
+            <a asp-action="ThongKe" class="btn btn-primary fw-bold">
+                📈 Xem thống kê LINQ chi tiết →
+            </a>
+        </div>
+    </div>
+
+    <!-- Danh sách các thẻ dữ liệu (Cards) -->
+    <div class="row g-3">
+        @foreach (var t in theDashboard)
+        {
+            <div class="col-6 col-md-4">
+                <div class="card border-@t.Mau shadow-sm h-100 position-relative overflow-hidden">
+                    <div class="card-body text-center p-3">
+                        <div class="display-5 fw-bold text-@t.Mau mb-1">
+                            @t.So
+                        </div>
+                        <div class="text-secondary fw-semibold">
+                            <i class="bi @t.Icon me-1"></i> @t.Nhan
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
