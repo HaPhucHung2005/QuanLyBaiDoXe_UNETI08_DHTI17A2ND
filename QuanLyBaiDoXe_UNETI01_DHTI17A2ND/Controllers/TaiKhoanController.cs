@@ -4,10 +4,6 @@
 // Nội dung thực hiện: Module 1 - Đăng nhập, Đăng xuất, Lưu Session và Quản lý tài khoản
 // =================================================================
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;

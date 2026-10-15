@@ -21,7 +21,7 @@ public class ChuPhuongTienController : Controller
     }
 
     // GET: CHUPHUONGTIENS (Admin xem danh sách & Tìm kiếm)
-    public async Task<IActionResult> Index(string? keyword, string? trangThai, int pageIndex = 1)    
+    public async Task<IActionResult> Index(string? keyword, string? trangThai, int pageIndex = 1)
     {
         var vaiTro = HttpContext.Session.GetString("VaiTro");
         if (vaiTro != "Admin")

@@ -1,7 +1,6 @@
 ﻿// Họ và tên: Hà Phúc Hưng
 // Mã sinh viên: 23203100001
 // Nội dung thực hiện: Module 1 - Entity TaiKhoan và Data Annotations
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
@@ -11,7 +10,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models
         [Key]
         public int MaTaiKhoan { get; set; }
 
-        [Required(ErrorMessage ="Tên đăng nhập không được để trống!")]
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống!")]
         [StringLength(50, ErrorMessage = "Tên đăng nhập không quá 50 ký tự")]
         [Display(Name = "Tên đăng nhập")]
         public string TenDangNhap { get; set; } = null!;

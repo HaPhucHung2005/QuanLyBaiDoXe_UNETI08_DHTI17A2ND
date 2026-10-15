@@ -6,8 +6,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
+using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 {

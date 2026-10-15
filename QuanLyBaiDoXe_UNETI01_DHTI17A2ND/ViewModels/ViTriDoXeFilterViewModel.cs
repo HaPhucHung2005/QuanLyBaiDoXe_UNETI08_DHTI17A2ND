@@ -6,7 +6,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels
     public class ViTriDoXeFilterViewModel
     {
         // Danh sách dữ liệu hiển thị trên trang hiện tại
-        public List<ViTriDoXe> DanhSachViTri { get; set; } = new ();
+        public List<ViTriDoXe> DanhSachViTri { get; set; } = new();
 
         // Các tham số Lưu giữ điều kiện Lọc & Tìm kiếm
         public string? SearchTenViTri { get; set; }

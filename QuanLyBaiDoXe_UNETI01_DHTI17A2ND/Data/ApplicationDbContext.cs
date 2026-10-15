@@ -4,9 +4,6 @@
 // Nội dung thực hiện: Khai báo DbContext, DbSet, Fluent API Ràng buộc và Seed Data
 // =================================================================
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
 

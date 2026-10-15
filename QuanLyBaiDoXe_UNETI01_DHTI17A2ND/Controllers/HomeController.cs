@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Models;
+using System.Diagnostics;
 
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers;
 
