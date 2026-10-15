@@ -3,69 +3,84 @@
 *@
 @model QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels.LoginViewModel
 
-@* Họ và tên: Hà Phúc Hưng
-   Mã SV: 23203100001 
-   Nội dung thực hiện: Module 1 - Quản lý tài khoản, Đăng nhập, Phân quyền
+@*
+    Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+    Mã sinh viên: 23203100001 - MSSV
+    Nội dung thực hiện: Module 1 - Giao diện Đăng nhập hệ thống & Phân quyền
 *@
 
 @{
     ViewData["Title"] = "Đăng Nhập Hệ Thống";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5 col-lg-4">
-        <div class="card p-4 shadow-sm border-0 rounded-3">
-            <h3 class="text-center mb-3 text-primary fw-bold">🔑 ĐĂNG NHẬP</h3>
-            <p class="text-muted text-center small mb-4">Hệ thống quản lý bãi đỗ xe & đăng ký gửi xe</p>
-
-            @* 1. Hiển thị thông báo lỗi từ Controller (như Tài khoản bị khóa, sai pass) *@
-            @if (TempData["Loi"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Loi"]
-                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
-                </div>
-            }
-            @if (TempData["Error"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Error"]
-                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
-                </div>
-            }
-            @if (TempData["ThongBao"] != null)
-            {
-                <div class="alert alert-success alert-dismissible fade show p-2 small" role="alert">
-                    <i class="bi bi-check-circle-fill me-1"></i> @TempData["ThongBao"]
-                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert"></button>
-                </div>
-            }
-
-            <form asp-action="Login" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="TenDangNhap" class="form-label fw-bold small">Tên đăng nhập</label>
-                    <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." />
-                    <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card p-4 shadow-sm border-0 rounded-3">
+                <div class="text-center mb-3">
+                    <span class="fs-1 text-primary"><i class="bi bi-shield-lock-fill"></i></span>
+                    <h3 class="text-primary fw-bold mb-1">ĐĂNG NHẬP</h3>
+                    <p class="text-muted small mb-0">Hệ thống Quản lý Bãi đỗ xe & Đăng ký gửi xe UNETI</p>
                 </div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="MatKhau" class="form-label fw-bold small">Mật khẩu</label>
-                    <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu..." />
-                    <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                <!-- Hiển thị thông báo lỗi hoặc thành công từ Controller -->
+                @if (TempData["Loi"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Loi"]
+                        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show p-2 small" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> @TempData["Error"]
+                        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ThongBao"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show p-2 small" role="alert">
+                        <i class="bi bi-check-circle-fill me-1"></i> @TempData["ThongBao"]
+                        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="TenDangNhap" class="form-label fw-bold small">Tên đăng nhập</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-secondary"><i class="bi bi-person-fill"></i></span>
+                            <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập..." autofocus />
+                        </div>
+                        <span asp-validation-for="TenDangNhap" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MatKhau" class="form-label fw-bold small">Mật khẩu</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-secondary"><i class="bi bi-key-fill"></i></span>
+                            <input asp-for="MatKhau" type="password" id="txtMatKhau" class="form-control" placeholder="Nhập mật khẩu..." />
+                            <button class="btn btn-outline-secondary" type="button" id="btnTogglePassword">
+                                <i class="bi bi-eye-fill" id="iconToggle"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm mb-3">
+                        🚀 Đăng Nhập
+                    </button>
+                </form>
+
+                <div class="text-center border-top pt-3">
+                    <span class="small text-muted me-1">Chưa có tài khoản?</span>
+                    <a asp-controller="TaiKhoan" asp-action="Create" class="small fw-bold text-decoration-none">
+                        Đăng ký Khách hàng mới
+                    </a>
                 </div>
-
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm mb-3">
-                    🚀 Đăng Nhập
-                </button>
-            </form>
-
-            <div class="text-center border-top pt-3">
-                <span class="small text-muted">Chưa có tài khoản?</span>
-                <a asp-controller="TaiKhoan" asp-action="Create" class="small fw-bold text-decoration-none">
-                    Đăng ký Khách hàng mới
-                </a>
             </div>
         </div>
     </div>
@@ -75,4 +90,21 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Xử lý ẩn / hiện mật khẩu khi click icon con mắt
+        document.getElementById('btnTogglePassword')?.addEventListener('click', function () {
+            const passwordInput = document.getElementById('txtMatKhau');
+            const iconToggle = document.getElementById('iconToggle');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                iconToggle.classList.remove('bi-eye-fill');
+                iconToggle.classList.add('bi-eye-slash-fill');
+            } else {
+                passwordInput.type = 'password';
+                iconToggle.classList.remove('bi-eye-slash-fill');
+                iconToggle.classList.add('bi-eye-fill');
+            }
+        });
+    </script>
 }

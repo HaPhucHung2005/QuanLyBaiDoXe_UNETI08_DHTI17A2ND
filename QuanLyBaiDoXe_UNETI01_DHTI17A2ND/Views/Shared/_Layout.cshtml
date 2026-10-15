@@ -35,47 +35,73 @@
                         {
                             <!-- Menu dành riêng cho Quản trị viên (Admin) -->
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="Index">Dashboard</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="Index">
+                                    <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="ThongKe">Thống Kê</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ThongKe" asp-action="ThongKe">
+                                    <i class="bi bi-bar-chart-line-fill me-1"></i>Thống Kê
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="TaiKhoan" asp-action="Index">Quản Lý Tài Khoản</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="TaiKhoan" asp-action="Index">
+                                    <i class="bi bi-people-fill me-1"></i>Tài Khoản
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="LoaiPhuongTien" asp-action="Index">Loại Phương Tiện</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="LoaiPhuongTien" asp-action="Index">
+                                    <i class="bi bi-tags-fill me-1"></i>Loại Xe
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Vị Trí Đỗ Xe</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">
+                                    <i class="bi bi-p-square-fill me-1"></i>Vị Trí Đỗ
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Index">Chủ Phương Tiện</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Index">
+                                    <i class="bi bi-person-badge-fill me-1"></i>Chủ Xe
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">
+                                    <i class="bi bi-car-front-fill me-1"></i>Phương Tiện
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Phiếu Gửi Xe</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">
+                                    <i class="bi bi-receipt-cutoff me-1"></i>Phiếu Gửi
+                                </a>
                             </li>
                         }
                         else if (Context.Session.GetString("MaTaiKhoan") != null)
                         {
                             <!-- Menu dành cho Khách hàng đã đăng nhập -->
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">Tra Cứu Vị Trí Đỗ</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ViTriDoXe" asp-action="Index">
+                                    <i class="bi bi-search me-1"></i>Tra Cứu Vị Trí Đỗ
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">Phương Tiện Của Tôi</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhuongTien" asp-action="Index">
+                                    <i class="bi bi-car-front-fill me-1"></i>Phương Tiện Của Tôi
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Create">Đăng Ký Gửi Xe</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Create">
+                                    <i class="bi bi-plus-circle-fill me-1"></i>Đăng Ký Gửi Xe
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">Lịch Sử Gửi Xe</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="PhieuGuiXe" asp-action="Index">
+                                    <i class="bi bi-clock-history me-1"></i>Lịch Sử Gửi Xe
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Details">Hồ Sơ Của Tôi</a>
+                                <a class="nav-link text-white fw-semibold" asp-controller="ChuPhuongTien" asp-action="Details">
+                                    <i class="bi bi-person-bounding-box me-1"></i>Hồ Sơ Của Tôi
+                                </a>
                             </li>
                         }
                     </ul>
@@ -85,16 +111,20 @@
                         @if (Context.Session.GetString("MaTaiKhoan") != null)
                         {
                             <li class="nav-item me-3 text-white">
-                                <small>Xin chào, <strong class="text-warning">@Context.Session.GetString("HoTen")</strong> (@Context.Session.GetString("VaiTro"))</small>
+                                <small><i class="bi bi-person-circle me-1"></i>Xin chào, <strong class="text-warning">@Context.Session.GetString("HoTen")</strong> (@Context.Session.GetString("VaiTro"))</small>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-light btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Logout">Đăng Xuất</a>
+                                <a class="btn btn-outline-light btn-sm fw-bold px-3" asp-controller="TaiKhoan" asp-action="Logout">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Đăng Xuất
+                                </a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-light text-primary btn-sm fw-bold" asp-controller="TaiKhoan" asp-action="Login">Đăng Nhập</a>
+                                <a class="btn btn-light text-primary btn-sm fw-bold px-3" asp-controller="TaiKhoan" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Đăng Nhập
+                                </a>
                             </li>
                         }
                     </ul>

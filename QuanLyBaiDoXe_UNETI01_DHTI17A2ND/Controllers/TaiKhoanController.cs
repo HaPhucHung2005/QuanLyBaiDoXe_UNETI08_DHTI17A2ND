@@ -1,6 +1,6 @@
 // =================================================================
-// Họ và tên: Hà Phúc Hưng
-// Mã sinh viên: 23203100001
+// Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
+// Mã sinh viên: 23203100001 - MSSV
 // Nội dung thực hiện: Module 1 - Đăng nhập, Đăng xuất, Lưu Session và Quản lý tài khoản
 // =================================================================
 
@@ -42,14 +42,14 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         }
 
         // =================================================================
-        // 2. ĐĂNG NHẬP & ĐĂNG XUẤT (MODULE 1 - MỤC 5.2 & 5.3)
+        // 2. ĐĂNG NHẬP & ĐĂNG XUẤT (MODULE 1)
         // =================================================================
         // GET: TaiKhoan/Login
         public IActionResult Login()
         {
             if (IsLoggedIn)
             {
-                return RedirectToAction("Index", IsAdmin ? "ThongKe" : "PhieuGuiXe");
+                return RedirectToAction("Index", IsAdmin ? "ThongKe" : "Home");
             }
             return View();
         }
@@ -61,35 +61,44 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            var account = await _context.TaiKhoan
+            var taiKhoan = await _context.TaiKhoan
                 .FirstOrDefaultAsync(t => t.TenDangNhap == model.TenDangNhap && t.MatKhau == model.MatKhau);
 
-            if (account == null)
+            if (taiKhoan == null)
             {
                 TempData["Loi"] = "Tên đăng nhập hoặc mật khẩu không chính xác.";
                 return View(model);
             }
 
-            if (!account.TrangThai)
+            if (!taiKhoan.TrangThai)
             {
-                TempData["Loi"] = "Tài khoản của bạn hiện đang bị khóa. Vui lòng liên hệ Admin.";
+                TempData["Loi"] = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên.";
                 return View(model);
             }
 
-            // Lưu thông tin tối thiểu vào Session
-            HttpContext.Session.SetInt32("MaTaiKhoan", account.MaTaiKhoan);
-            HttpContext.Session.SetString("TenDangNhap", account.TenDangNhap);
-            HttpContext.Session.SetString("HoTen", account.HoTen ?? account.TenDangNhap);
-            HttpContext.Session.SetString("VaiTro", account.VaiTro ?? "Khách hàng");
+            // 1. Lấy thông tin Họ tên từ ChuPhuongTien (nếu có)
+            var chuXe = await _context.ChuPhuongTien.FirstOrDefaultAsync(c => c.MaTaiKhoan == taiKhoan.MaTaiKhoan);
+            string hoTen = chuXe?.HoTen ?? taiKhoan.TenDangNhap;
 
-            TempData["ThongBao"] = $"Xin chào {account.HoTen}, bạn đã đăng nhập thành công!";
+            // 2. Lưu Session Đăng nhập
+            HttpContext.Session.SetInt32("MaTaiKhoan", taiKhoan.MaTaiKhoan);
+            HttpContext.Session.SetString("TenDangNhap", taiKhoan.TenDangNhap);
+            HttpContext.Session.SetString("VaiTro", taiKhoan.VaiTro);
+            HttpContext.Session.SetString("HoTen", hoTen);
 
-            // Phân hướng trang chủ theo vai trò
-            if (account.VaiTro == "Admin")
+            TempData["ThongBao"] = $"Đăng nhập thành công! Chào mừng {hoTen}.";
+
+            // 3. ĐIỀU HƯỚNG MẶC ĐỊNH THEO VAI TRÒ (ROLE-BASED REDIRECT)
+            if (taiKhoan.VaiTro == "Admin")
             {
-                return RedirectToAction("Index", "ThongKe"); // Vào Dashboard Admin
+                // Admin mặc định chuyển trực tiếp về Dashboard Thống kê
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "PhieuGuiXe"); // Vào Danh sách phiếu của Khách
+            else
+            {
+                // Khách hàng chuyển về Trang chủ
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         // GET: TaiKhoan/Logout
@@ -118,7 +127,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         }
 
         // =================================================================
-        // 4. TẠO TÀI KHOẢN MỚI
+        // 4. TẠO TÀI KHOẢN MỚI / ĐĂNG KÝ
         // =================================================================
         // GET: TaiKhoan/Create
         public IActionResult Create()
@@ -131,7 +140,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TenDangNhap,MatKhau,HoTen,Email,VaiTro,TrangThai")] TaiKhoan taiKhoan)
         {
-            // 1. Kiểm tra trùng Tên đăng nhập
+            // Kiểm tra trùng Tên đăng nhập
             bool isExist = await _context.TaiKhoan.AnyAsync(t => t.TenDangNhap == taiKhoan.TenDangNhap);
             if (isExist)
             {
@@ -143,14 +152,13 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
                 _context.Add(taiKhoan);
                 await _context.SaveChangesAsync();
 
-                // Nếu là Khách hàng tự đăng ký: Tự động tạo bản ghi Chủ phương tiện liên kết
+                // Tự động tạo Hồ sơ Chủ phương tiện nếu là Khách hàng đăng ký
                 if (taiKhoan.VaiTro == "Khách hàng")
                 {
                     var chuXe = new ChuPhuongTien
                     {
                         MaTaiKhoan = taiKhoan.MaTaiKhoan,
-                        HoTen = taiKhoan.HoTen,
-                        Email = taiKhoan.Email,
+                        HoTen = string.IsNullOrEmpty(taiKhoan.TenDangNhap) ? "Khách hàng" : taiKhoan.TenDangNhap,
                         NgayDangKy = DateTime.Now,
                         TrangThai = true
                     };
@@ -160,7 +168,6 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 
                 TempData["ThongBao"] = $"Tạo tài khoản '{taiKhoan.TenDangNhap}' thành công!";
 
-                // Nếu khách hàng tự đăng ký công khai
                 if (!IsLoggedIn) return RedirectToAction(nameof(Login));
 
                 return RedirectToAction(nameof(Index));
@@ -189,7 +196,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         // POST: TaiKhoan/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaTaiKhoan,TenDangNhap,MatKhau,HoTen,Email,VaiTro,TrangThai")] TaiKhoan taiKhoan)
+        public async Task<IActionResult> Edit(int id, [Bind("MaTaiKhoan,TenDangNhap,MatKhau,VaiTro,TrangThai")] TaiKhoan taiKhoan)
         {
             if (!IsLoggedIn) return ChuaDangNhap();
             if (!IsAdmin) return KhongCoQuyen();

@@ -7,11 +7,13 @@
 @using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Trang Chủ - Quản Lý Bãi Đỗ Xe UNETI";
-    var hoTen = Context.Session.GetString("HoTen") ?? "Khách hàng";
+    var hoTen = Context.Session.GetString("HoTen") ?? "Người dùng";
+    var vaiTro = Context.Session.GetString("VaiTro");
+    bool isAdmin = vaiTro == "Admin";
 }
 
 <div class="container mt-3">
-    <!-- Hiển thị thông báo TempData nếu có -->
+    <!-- Hiển thị thông báo TempData -->
     @if (TempData["ThongBao"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
@@ -29,62 +31,115 @@
 
     <!-- Banner chào mừng -->
     <div class="p-5 mb-4 bg-primary text-white rounded-3 shadow-sm">
-        <div class="container-fluid py-3">
+        <div class="container-fluid py-2">
             <h1 class="display-5 fw-bold">👋 Xin chào, @hoTen!</h1>
-            <p class="col-md-9 fs-5">
-                Chào mừng bạn đến với <strong>Hệ Thống Quản Lý & Đăng Ký Gửi Xe UNETI</strong>. 
-                Bạn có thể dễ dàng tra cứu vị trí đỗ còn trống, quản lý danh sách phương tiện và đăng ký gửi xe nhanh chóng ngay tại đây.
+            <p class="col-md-10 fs-5 mt-2">
+                Chào mừng bạn đến với <strong>Hệ Thống Quản Lý Bãi Đỗ Xe UNETI</strong>.
+                @(isAdmin
+                    ? "Bạn đang truy cập với vai trò Quản trị viên. Hãy chọn các chức năng quản lý dưới đây để điều hành hệ thống bãi xe."
+                    : "Hệ thống hỗ trợ tra cứu vị trí đỗ, quản lý phương tiện cá nhân và đăng ký gửi xe nhanh chóng, tiện lợi.")
             </p>
+
             <div class="d-flex gap-3 mt-4">
-                <a asp-controller="PhieuGuiXe" asp-action="Create" class="btn btn-warning btn-lg fw-bold text-dark px-4 shadow">
-                    <i class="bi bi-plus-circle-fill me-2"></i>Đăng Ký Gửi Xe Ngay
-                </a>
-                <a asp-controller="ViTriDoXe" asp-action="Index" class="btn btn-outline-light btn-lg px-4 fw-semibold">
-                    <i class="bi bi-search me-2"></i>Tra Cứu Vị Trí Đỗ
-                </a>
+                @if (isAdmin)
+                {
+                    <a asp-controller="ThongKe" asp-action="Index" class="btn btn-warning btn-lg fw-bold text-dark px-4 shadow">
+                        <i class="bi bi-speedometer2 me-2"></i>Xem Dashboard Thống Kê
+                    </a>
+                    <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                        <i class="bi bi-card-checklist me-2"></i>Duyệt Phiếu Gửi Xe
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="PhieuGuiXe" asp-action="Create" class="btn btn-warning btn-lg fw-bold text-dark px-4 shadow">
+                        <i class="bi bi-plus-circle-fill me-2"></i>Đăng Ký Gửi Xe Ngay
+                    </a>
+                    <a asp-controller="ViTriDoXe" asp-action="Index" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                        <i class="bi bi-search me-2"></i>Tra Cứu Vị Trí Đỗ
+                    </a>
+                }
             </div>
         </div>
     </div>
 
-    <!-- Phím tắt truy cập nhanh -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 border-top border-4 border-primary rounded-3">
-                <div class="card-body text-center p-4">
-                    <div class="fs-1 text-primary mb-2"><i class="bi bi-car-front-fill"></i></div>
-                    <h5 class="card-title fw-bold">Phương Tiện Của Tôi</h5>
-                    <p class="card-text text-muted small">Xem danh sách xe đã đăng ký, cập nhật nhãn hiệu, màu sắc hoặc đăng ký xe mới vào hệ thống.</p>
-                    <a asp-controller="PhuongTien" asp-action="Index" class="btn btn-outline-primary btn-sm fw-bold px-3">
-                        Xem Danh Sách Xe →
-                    </a>
+    <!-- Phím tắt chức năng chính -->
+    @if (isAdmin)
+    {
+        <!-- PHÍM TẮT DÀNH CHO ADMIN -->
+        <h4 class="fw-bold text-secondary mb-3"><i class="bi bi-gear-fill me-2"></i>Danh Mục Quản Lý Bãi Xe</h4>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-primary rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-primary mb-2"><i class="bi bi-p-square-fill"></i></div>
+                        <h5 class="card-title fw-bold">Quản Lý Vị Trí Đỗ Xe</h5>
+                        <p class="card-text text-muted small">Cấu hình danh sách vị trí đỗ xe theo khu vực, tầng và loại phương tiện khả dụng.</p>
+                        <a asp-controller="ViTriDoXe" asp-action="Index" class="btn btn-outline-primary btn-sm fw-bold px-3">Truy Cập →</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 border-top border-4 border-success rounded-3">
-                <div class="card-body text-center p-4">
-                    <div class="fs-1 text-success mb-2"><i class="bi bi-receipt-cutoff"></i></div>
-                    <h5 class="card-title fw-bold">Lịch Sử Gửi Xe</h5>
-                    <p class="card-text text-muted small">Theo dõi chi tiết các lượt gửi xe đang hoạt động, phiếu chờ xác nhận và lịch sử các lần đỗ xe trước đây.</p>
-                    <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-success btn-sm fw-bold px-3">
-                        Xem Lịch Sử Gửi →
-                    </a>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-success rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-receipt-cutoff"></i></div>
+                        <h5 class="card-title fw-bold">Quản Lý Phiếu Gửi Xe</h5>
+                        <p class="card-text text-muted small">Duyệt yêu cầu gửi xe, xác nhận xe vào/ra bãi và tính phí dịch vụ tự động.</p>
+                        <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-success btn-sm fw-bold px-3">Truy Cập →</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm border-0 border-top border-4 border-info rounded-3">
-                <div class="card-body text-center p-4">
-                    <div class="fs-1 text-info mb-2"><i class="bi bi-person-bounding-box"></i></div>
-                    <h5 class="card-title fw-bold">Hồ Sơ Của Tôi</h5>
-                    <p class="card-text text-muted small">Cập nhật thông tin cá nhân, số điện thoại liên hệ, ngày sinh và địa chỉ cư trú của chủ xe.</p>
-                    <a asp-controller="ChuPhuongTien" asp-action="Details" class="btn btn-outline-info btn-sm fw-bold px-3">
-                        Xem Thông Tin Hồ Sơ →
-                    </a>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-info rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-info mb-2"><i class="bi bi-people-fill"></i></div>
+                        <h5 class="card-title fw-bold">Quản Lý Chủ Xe & Tài Khoản</h5>
+                        <p class="card-text text-muted small">Tra cứu thông tin khách hàng, phân quyền hệ thống và theo dõi tài khoản.</p>
+                        <a asp-controller="ChuPhuongTien" asp-action="Index" class="btn btn-outline-info btn-sm fw-bold px-3">Truy Cập →</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <!-- PHÍM TẮT DÀNH CHO KHÁCH HÀNG -->
+        <h4 class="fw-bold text-secondary mb-3"><i class="bi bi-grid-fill me-2"></i>Dịch Vụ Cá Nhân</h4>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-primary rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-primary mb-2"><i class="bi bi-car-front-fill"></i></div>
+                        <h5 class="card-title fw-bold">Phương Tiện Của Tôi</h5>
+                        <p class="card-text text-muted small">Quản lý các xe đã đăng ký, thêm phương tiện mới hoặc cập nhật thông tin xe.</p>
+                        <a asp-controller="PhuongTien" asp-action="Index" class="btn btn-outline-primary btn-sm fw-bold px-3">Xem Danh Sách →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-success rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-success mb-2"><i class="bi bi-clock-history"></i></div>
+                        <h5 class="card-title fw-bold">Lịch Sử Gửi Xe</h5>
+                        <p class="card-text text-muted small">Theo dõi lượt xe đang đỗ, trạng thái phiếu chờ xác nhận và chi tiết phí gửi.</p>
+                        <a asp-controller="PhieuGuiXe" asp-action="Index" class="btn btn-outline-success btn-sm fw-bold px-3">Xem Lịch Sử →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0 border-top border-4 border-info rounded-3">
+                    <div class="card-body text-center p-4">
+                        <div class="fs-1 text-info mb-2"><i class="bi bi-person-bounding-box"></i></div>
+                        <h5 class="card-title fw-bold">Hồ Sơ Của Tôi</h5>
+                        <p class="card-text text-muted small">Cập nhật họ tên, số điện thoại, địa chỉ cư trú và các thông tin liên hệ cá nhân.</p>
+                        <a asp-controller="ChuPhuongTien" asp-action="Details" class="btn btn-outline-info btn-sm fw-bold px-3">Xem Hồ Sơ →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
