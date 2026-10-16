@@ -1,5 +1,12 @@
+// =================================================================
+// Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh - Lương Chính Nguyên
+// Mã sinh viên: 23203100001 - MSSV - MSSV
+// Nội dung thực hiện: Cấu hình hệ thống Program.cs (.NET Core, Session, DbContext SQL Server & Culture)
+// =================================================================
+
 using Microsoft.EntityFrameworkCore;
 using QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Data;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +43,12 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// 3. THIẾT LẬP CULTURINFO (Định dạng dấu chấm phân cách số thập phân)
+var cultureInfo = new CultureInfo("en-US");
+cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -48,14 +61,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// 3. KÍCH HOẠT MIDDLEWARE SESSION (QUAN TRỌNG: Đặt trước UseAuthorization)
+// 4. KÍCH HOẠT MIDDLEWARE SESSION (Đặt trước UseAuthorization)
 app.UseSession();
-
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
-// 4. ĐỊNH TUYẾN MẶC ĐỊNH VỀ TRANG ĐĂNG NHẬP (TAIKHOAN/LOGIN)
+// 5. ĐỊNH TUYẾN MẶC ĐỊNH VỀ TRANG ĐĂNG NHẬP (TAIKHOAN/LOGIN)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=TaiKhoan}/{action=Login}/{id?}")

@@ -1,0 +1,14 @@
+!!! Chú ý !!!
+Nếu mang đoạn script có sẵn đường dẫn tệp cứng C:\Program Files\Microsoft SQL Server\... đi thực thi trên máy khác (như máy của giảng viên hoặc bạn cùng nhóm), rất dễ gặp lỗi do không trùng khớp cấu hình thư mục lưu trữ hoặc phiên bản SQL Server.
+
+Để khắc phục hãy thực hiện bước dưới đây:
+/***************************************************************************************************
+ * LƯU Ý KHI CHẠY FILE SQL TRÊN MÁY KHÁC (NHƯ MÁY TÍNH CỦA GIẢNG VIÊN / MÁY BẠN BÈ):
+ * 
+ * 1. Nếu chạy bị lỗi đường dẫn tệp (Directory lookup for the file... failed):
+ *    -> Hãy tạo trước 1 Database trống tên [QuanLyBaiDoXe_UNETI01_DB] trong SQL Server Management Studio (SSMS).
+ *    -> Sau đó BỎ QUA lệnh CREATE DATABASE bên dưới và bắt đầu tô đen chạy từ dòng: USE [QuanLyBaiDoXe_UNETI01_DB]
+ * 
+ * 2. Nếu chạy trên máy cá nhân đã cấu hình đúng đường dẫn C:\Program Files\Microsoft SQL Server\...
+ *    -> Chạy toàn bộ file bình thường.
+ ***************************************************************************************************/
