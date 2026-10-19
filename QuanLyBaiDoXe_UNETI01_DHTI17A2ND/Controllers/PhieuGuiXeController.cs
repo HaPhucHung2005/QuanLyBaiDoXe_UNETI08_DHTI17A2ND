@@ -358,6 +358,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // 1. Lấy mốc thời gian vào/ra thực tế
             DateTime thoiGianRa = DateTime.Now;
             DateTime thoiGianVao = phieu.ThoiGianVaoThucTe ?? phieu.ThoiGianDuKienVao;
 
@@ -367,16 +368,20 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // 2. Tính khoảng thời gian đỗ và làm tròn lên theo giờ (Math.Ceiling)
             TimeSpan duration = thoiGianRa - thoiGianVao;
             int soGioTinhPhi = (int)Math.Ceiling(duration.TotalHours);
             if (soGioTinhPhi < 1) soGioTinhPhi = 1;
 
+            // 3. Nhân đơn giá theo giờ để ra tổng thành tiền
             decimal thanhTien = soGioTinhPhi * phieu.DonGiaTheoGio;
 
+            // 4. Cập nhật thông tin phiếu gửi xe
             phieu.ThoiGianRaThucTe = thoiGianRa;
             phieu.ThanhTien = thanhTien;
             phieu.TrangThai = TrangThaiPhieu.DaLayXe;
 
+            // 5. Kiểm tra và giải phóng vị trí đỗ về trạng thái "Còn trống"
             bool remainingActive = await _context.PhieuGuiXe.AnyAsync(p =>
                 p.MaViTri == phieu.MaViTri &&
                 p.MaPhieu != phieu.MaPhieu &&
@@ -389,6 +394,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 
             await _context.SaveChangesAsync();
             TempData["ThongBao"] = $"Xác nhận xe {phieu.PhuongTien?.BienSoXe} ra bãi thành công. Thành tiền: {thanhTien:N0} VNĐ ({soGioTinhPhi} giờ).";
+            
             return RedirectToAction(nameof(Index));
         }
 
