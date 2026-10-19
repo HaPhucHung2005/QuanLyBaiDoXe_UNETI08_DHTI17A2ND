@@ -1,8 +1,9 @@
-================================================================================
-BÀI TẬP LỚN: QUẢN LÝ BÃI ĐỖ XE VÀ ĐĂNG KÝ GỬI XE (ASP.NET CORE 10 MVC)
-Lớp: DHTI17A2ND | Trường: ĐẠI HỌC KINH TẾ KỸ THUẬT CÔNG NGHIỆP - UNETI
-================================================================================
-
+<p>===========================================================================</p>
+<h2>BÀI TẬP LỚN: QUẢN LÝ BÃI ĐỖ XE VÀ ĐĂNG KÝ GỬI XE (ASP.NET CORE 10 MVC)</h2>
+<h2>Lớp: DHTI17A2ND | Trường: ĐẠI HỌC KINH TẾ KỸ THUẬT CÔNG NGHIỆP - UNETI</h2>
+<p>===========================================================================</p>
+<body>
+   <div>
 1. LINK REPOSITORY GITHUB:
    - Link: https://github.com/HaPhucHung2005/QuanLyBaiDoXe_UNETI01_DHTI17A2ND
 
@@ -33,4 +34,5 @@ Lớp: DHTI17A2ND | Trường: ĐẠI HỌC KINH TẾ KỸ THUẬT CÔNG NGHIỆ
    - Cấu hình chuỗi kết nối trong appsettings.json khớp với SQL Server máy tính.
    - Chạy lệnh: dotnet run (hoặc nhấn F5/Ctrl+F5 trong Visual Studio).
    - Truy cập địa chỉ Localhost hiển thị trên màn hình.
-================================================================================
+   </div>
+</body>
