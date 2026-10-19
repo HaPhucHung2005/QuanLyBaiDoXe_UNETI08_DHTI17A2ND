@@ -1,24 +1,36 @@
-Bài tập lớn - Nhóm 1 - DHTI17A2ND
----------------------------------
-Thành Viên trong nhóm:
-  Hà Phúc Hưng
-  Lương Chính Nguyên
-  Trần Ngọc Minh
+================================================================================
+BÀI TẬP LỚN: QUẢN LÝ BÃI ĐỖ XE VÀ ĐĂNG KÝ GỬI XE (ASP.NET CORE 10 MVC)
+Lớp: DHTI17A2ND | Trường: ĐẠI HỌC KINH TẾ KỸ THUẬT CÔNG NGHIỆP - UNETI
+================================================================================
 
-Nội dung: Bài tập lớn - Hệ thống Quản lý Bãi Đỗ Xe và Đăng ký Gửi xe
+1. LINK REPOSITORY GITHUB:
+   - Link: https://github.com/HaPhucHung2005/QuanLyBaiDoXe_UNETI01_DHTI17A2ND
 
-Quá trình hiện tại:
--  Công việc đã hoàn thiện trước đó:
-  +  Đã hoàn thiện toàn bộ Module-1 và Module-2 là Tài Khoản và Quản lý phương tiện và Loại phương tiện do Hà Phúc Hưng thực hiện
-  +  Module-3: Trần Ngọc Minh và Hà Phúc Hưng đã hoàn thiện Module QUẢN LÝ CHỦ PHƯƠNG TIỆN, PHƯƠNG TIỆN VÀ ĐĂNG KÝ GỬI XE
-  +  Module-4: Trần Ngọc Minh và Hà Phúc Hưng đã hoàn thiện Module QUẢN LÝ PHIẾU GỬI XE, XÁC NHẬN XE VÀO/RA, TÍNH PHÍ, DASHBOARD VÀ THỐNG KÊ
-  +  Xử lý lỗi khi phát sinh
-  +  Thiết kế lại cơ sở dữ liệu để hoàn thiện dự án
+2. TÀI KHOẢN KIỂM THỬ (TEST ACCOUNTS):
+   - Quản trị viên (Admin):
+     + Tên đăng nhập: admin
+     + Mật khẩu: 123456
+   - Khách hàng (User):
+     + Tên đăng nhập: khachhang1
+     + Mật khẩu: 123456
 
--  Công việc còn lại:
-  +  Chạy kiểm thử
-  +  Làm báo cáo gửi nộp cho Giảng viên
+3. HƯỚNG DẪN CÀI ĐẶT & TẠO DATABASE:
+   CÁCH 1: Sử dụng File Script SQL (Khuyên dùng)
+   - Mở SQL Server Management Studio (SSMS).
+   - Mở file: 02_Database/QuanLyBaiDoXe_UNETI01_DB.sql
+   - Đọc khối ghi chú ở đầu file và nhấn Execute để tạo Database kèm dữ liệu mẫu.
 
-Môi trường kiểm thử dự án:
--  Visual Studio 2022/2026
--  SQL Server 2022/2025 (Dùng cho cả phiên bản SQLEXPRESS cho cá nhân/doanh nghiệp nhỏ và MSSQLSERVER cho doanh nghiệp lớn)
+   CÁCH 2: Sử dụng EF Core Migration
+   - Mở Terminal tại thư mục 01_SourceCode/QuanLyBaiDoXe_UNETI01_DHTI17A2ND
+   - Chạy lệnh: dotnet ef database update
+
+   CÁCH 3: Sử dụng Package Manager Console trong Visual Studio
+   - Mở Solution QuanLyBaiDoXe_UNETI01_DHTI17A2ND.sln
+   - Mở Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console)
+   - Chạy lệnh: Update-Database
+
+4. HƯỚNG DẪN CHẠY CHƯƠNG TRÌNH:
+   - Cấu hình chuỗi kết nối trong appsettings.json khớp với SQL Server máy tính.
+   - Chạy lệnh: dotnet run (hoặc nhấn F5/Ctrl+F5 trong Visual Studio).
+   - Truy cập địa chỉ Localhost hiển thị trên màn hình.
+================================================================================
