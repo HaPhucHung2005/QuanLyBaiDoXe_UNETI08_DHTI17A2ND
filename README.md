@@ -8,15 +8,14 @@ Thành Viên trong nhóm:
 Nội dung: Bài tập lớn - Hệ thống Quản lý Bãi Đỗ Xe và Đăng ký Gửi xe
 
 Quá trình hiện tại:
--  Đã hoàn thiện toàn bộ Module-1 và Module-2 là Tài Khoản và Quản lý phương tiện và Loại phương tiện do Hà Phúc Hưng thực hiện
-
--  Công việc đã hoàn thiện toàn bộ vào ngày 12/10/2026:
+-  Công việc đã hoàn thiện trước đó:
+  +  Đã hoàn thiện toàn bộ Module-1 và Module-2 là Tài Khoản và Quản lý phương tiện và Loại phương tiện do Hà Phúc Hưng thực hiện
   +  Module-3: Trần Ngọc Minh và Hà Phúc Hưng đã hoàn thiện Module QUẢN LÝ CHỦ PHƯƠNG TIỆN, PHƯƠNG TIỆN VÀ ĐĂNG KÝ GỬI XE
   +  Module-4: Trần Ngọc Minh và Hà Phúc Hưng đã hoàn thiện Module QUẢN LÝ PHIẾU GỬI XE, XÁC NHẬN XE VÀO/RA, TÍNH PHÍ, DASHBOARD VÀ THỐNG KÊ
-  
--  Công việc duy nhất (hoàn thành trước ngày 19/10/2026):
   +  Xử lý lỗi khi phát sinh
   +  Thiết kế lại cơ sở dữ liệu để hoàn thiện dự án
+
+-  Công việc còn lại:
   +  Chạy kiểm thử
   +  Làm báo cáo gửi nộp cho Giảng viên
 
