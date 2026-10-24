@@ -394,7 +394,7 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
 
             await _context.SaveChangesAsync();
             TempData["ThongBao"] = $"Xác nhận xe {phieu.PhuongTien?.BienSoXe} ra bãi thành công. Thành tiền: {thanhTien:N0} VNĐ ({soGioTinhPhi} giờ).";
-            
+
             return RedirectToAction(nameof(Index));
         }
 
