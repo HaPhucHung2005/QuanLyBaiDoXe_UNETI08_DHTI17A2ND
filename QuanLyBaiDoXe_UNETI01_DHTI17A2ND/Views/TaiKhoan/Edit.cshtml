@@ -20,19 +20,21 @@
                 <div class="card-body p-4">
                     <form asp-action="Edit" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
-                        
+
                         <input type="hidden" asp-for="MaTaiKhoan" />
 
                         <div class="mb-3">
                             <label asp-for="TenDangNhap" class="form-label fw-bold small">Tên đăng nhập</label>
-                            <input asp-for="TenDangNhap" class="form-control" readonly />
+                            <input asp-for="TenDangNhap" class="form-control bg-light" readonly />
                             <small class="text-muted fs-7">Tên đăng nhập không được phép thay đổi.</small>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="MatKhau" class="form-label fw-bold small">Mật khẩu</label>
-                            <input asp-for="MatKhau" type="password" class="form-control" placeholder="Nhập mật khẩu mới..." />
-                            <span asp-validation-for="MatKhau" class="text-danger small"></span>
+                            <label asp-for="MatKhau" class="form-label fw-bold small">Mật khẩu mới</label>
+                            <!-- Thêm data-val="false" và value="" để bỏ qua bắt buộc nhập mật khẩu khi chỉnh sửa -->
+                            <input asp-for="MatKhau" type="password" class="form-control" value="" data-val="false" placeholder="Nhập mật khẩu mới..." />
+                            <small class="text-muted fs-7">Để trống nếu muốn giữ nguyên mật khẩu cũ.</small>
+                            <span asp-validation-for="MatKhau" class="text-danger small d-block"></span>
                         </div>
 
                         <div class="mb-3">

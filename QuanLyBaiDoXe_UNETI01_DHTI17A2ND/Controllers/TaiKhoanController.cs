@@ -192,20 +192,42 @@ namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.Controllers
         // POST: TaiKhoan/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaTaiKhoan,TenDangNhap,MatKhau,VaiTro,TrangThai")] TaiKhoan taiKhoan)
+        public async Task<IActionResult> Edit(int id, [Bind("MaTaiKhoan,TenDangNhap,MatKhau,HoTen,Email,VaiTro,TrangThai")] TaiKhoan taiKhoan)
         {
             if (!IsLoggedIn) return ChuaDangNhap();
             if (!IsAdmin) return KhongCoQuyen();
 
             if (id != taiKhoan.MaTaiKhoan) return NotFound();
 
+            // Nếu để trống mật khẩu khi sửa, bỏ qua validate Mật khẩu và giữ nguyên mật khẩu cũ
+            if (string.IsNullOrWhiteSpace(taiKhoan.MatKhau))
+            {
+                ModelState.Remove("MatKhau");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(taiKhoan);
+                    var taiKhoanGoc = await _context.TaiKhoan.FindAsync(id);
+                    if (taiKhoanGoc == null) return NotFound();
+
+                    // Cập nhật các thông tin mới từ Form
+                    taiKhoanGoc.HoTen = taiKhoan.HoTen;
+                    taiKhoanGoc.Email = taiKhoan.Email;
+                    taiKhoanGoc.VaiTro = taiKhoan.VaiTro;
+                    taiKhoanGoc.TrangThai = taiKhoan.TrangThai;
+
+                    // Chỉ đổi mật khẩu nếu người dùng nhập mật khẩu mới
+                    if (!string.IsNullOrWhiteSpace(taiKhoan.MatKhau))
+                    {
+                        taiKhoanGoc.MatKhau = taiKhoan.MatKhau;
+                    }
+
+                    _context.Update(taiKhoanGoc);
                     await _context.SaveChangesAsync();
-                    TempData["ThongBao"] = $"Cập nhật tài khoản '{taiKhoan.TenDangNhap}' thành công!";
+
+                    TempData["ThongBao"] = $"Cập nhật tài khoản '{taiKhoanGoc.TenDangNhap}' thành công!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
