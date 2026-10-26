@@ -1,6 +1,6 @@
 ﻿// =================================================================
 // Họ và tên: Trần Ngọc Minh
-// Mã sinh viên: [điền MSSV]
+// Mã sinh viên: 23203100006
 // Nội dung thực hiện: Module 3 - ViewModel cho phương tiện
 // =================================================================
 using Microsoft.AspNetCore.Mvc.Rendering;

@@ -1,7 +1,7 @@
 ﻿// =================================================================
 // Dùng chung toan bo Module
 // Họ và tên: Hà Phúc Hưng - Trần Ngọc Minh
-// Mã sinh viên: [điền MSSV]
+// Mã sinh viên: 23203100001 - 23203100006
 // Nội dung thực hiện: Hằng số trạng thái phiếu gửi xe và trạng thái vị trí đỗ
 //                     (tránh viết chuỗi "cứng" rải rác trong Controller/Service)
 // =================================================================

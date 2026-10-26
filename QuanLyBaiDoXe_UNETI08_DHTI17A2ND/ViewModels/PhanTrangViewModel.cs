@@ -1,4 +1,5 @@
-﻿// Dùng chung Module 3 và 4 - Lương Chính Nguyên / Trần Ngọc Minh (MSSV: [điền MSSV])
+﻿// Dùng chung Module 3 và 4 - Lương Chính Nguyên
+// Trần Ngọc Minh (MSSV: 23203100006)
 // Nội dung thực hiện: ViewModel cho partial phân trang, giữ nguyên điều kiện tìm kiếm/lọc/sắp xếp khi chuyển trang
 namespace QuanLyBaiDoXe_UNETI01_DHTI17A2ND.ViewModels
 {

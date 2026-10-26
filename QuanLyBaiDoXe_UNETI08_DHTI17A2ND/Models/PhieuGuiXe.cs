@@ -1,8 +1,7 @@
 ﻿// =================================================================
 // Họ và tên: Trần Ngọc Minh
-// Mã sinh viên: [điền MSSV]
+// Mã sinh viên: [23203100006]
 // Nội dung: Module 3 - Entity PhieuGuiXe (thông tin đăng ký)
-// Mã sinh viên: 23203100001
 // =================================================================
 
 using System.ComponentModel.DataAnnotations;
